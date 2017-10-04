@@ -1,2 +1,34 @@
 ---
 # tasks file for mfts
+
+- name: install server packages
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
+  with_items:
+    - screen
+
+- name: change locales
+  locale_gen:
+    name: {{ item }}
+  with_item: {{ mfts_locales }}
+
+- name: modify escape for screen
+  lineinfile:
+    path: /etc/screenrc
+    regexp: "^escape"
+    line: 'escape: "^t^t"'
+
+- name: modify hardstatus for screen
+  lineinfile:
+    path: /etc/screenrc
+    regexp: "^hardstatus"
+    line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
+- name: modify shelltitle for screen
+  lineinfile:
+    path: /etc/screenrc
+    regexp: "^shelltitle"
+    line: 'shelltitle: "{{ ansible_hostname }}"'
+
+- name: setting timezone
+  timezone:
+    name: Asia/Tokyo
+
