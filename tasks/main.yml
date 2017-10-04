@@ -8,8 +8,9 @@
 
 - name: change locales
   locale_gen:
-    name: {{ item }}
-  with_item: {{ mfts_locales }}
+    name: "{{ item }}"
+  with_items: 
+    - "{{ mfts_locales }}"
 
 - name: modify escape for screen
   lineinfile:
