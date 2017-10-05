@@ -10,6 +10,7 @@ mfts_packages:
   - lsof
   - tcpdump
   - nmap
+  - binutils
 
 mfts_additional_packages:
 
