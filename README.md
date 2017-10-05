@@ -1,4 +1,4 @@
-Role Name
+Role Name: My Favorite Settings
 =========
 
 This role sets up my favorite settings.
@@ -19,8 +19,30 @@ Role Variables
 --------------
 
 ### Defaults
-    TBD
-
+    mfts_packages:
+      - screen
+      - mlocate
+      - net-tools
+      - dnsutils
+      - iproute2
+      - lsof
+      - tcpdump
+      - nmap
+	* These packages will be installed as default.
+ 	
+    mfts_additional_packages: []
+	* Specified packages will be installed to the system.
+	
+    mfts_removal_packages: []
+	* Specified packages will be removed from the system.
+	
+    mfts_locales:
+	  - ja_JP.UTF-8
+      - en_US.UTF-8
+	  
+    mfts_timezone: "Asia/Tokyo"
+    * This value will be passed to the *timezone* module.
+	
 Dependencies
 ------------
 

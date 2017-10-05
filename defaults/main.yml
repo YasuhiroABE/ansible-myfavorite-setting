@@ -1,7 +1,22 @@
 ---
 # defaults file for mfts
 
+mfts_packages:
+  - screen
+  - mlocate
+  - net-tools
+  - dnsutils
+  - iproute2
+  - lsof
+  - tcpdump
+  - nmap
+
+mfts_additional_packages:
+
+mfts_removal_packages:
+  
 mfts_locales:
   - ja_JP.UTF-8
   - en_US.UTF-8
-  
+
+mfts_timezone: "Asia/Tokyo"

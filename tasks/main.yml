@@ -1,10 +1,21 @@
 ---
 # tasks file for mfts
 
-- name: install server packages
+- name: install packages
   apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
   with_items:
-    - screen
+    - "{{ mfts_packages }}"
+
+- name: install additional packages
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
+  with_items:
+    - "{{ mfts_additional_packages }}"
+
+- name: remove packages
+  apt: pkg={{ item }}
+  state: absent
+  with_items:
+    - "{{ mfts_removal_packages }}"
 
 - name: change locales
   locale_gen:
@@ -31,5 +42,5 @@
 
 - name: setting timezone
   timezone:
-    name: Asia/Tokyo
+    name: {{ mfts_timezone }}
 
