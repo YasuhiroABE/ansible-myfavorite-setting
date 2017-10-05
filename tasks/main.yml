@@ -42,5 +42,5 @@
 
 - name: setting timezone
   timezone:
-    name: {{ mfts_timezone }}
+    name: "{{ mfts_timezone }}"
 
