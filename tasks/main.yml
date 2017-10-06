@@ -23,6 +23,9 @@
   with_items: 
     - "{{ mfts_locales }}"
 
+- name: exec update-locale
+  command: update-locale LANG="{{ mfts_locales[0] }}"
+    
 - name: modify escape for screen
   lineinfile:
     path: /etc/screenrc

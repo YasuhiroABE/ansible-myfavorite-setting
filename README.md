@@ -37,8 +37,9 @@ Role Variables
 	* Specified packages will be removed from the system.
 	
     mfts_locales:
-	  - ja_JP.UTF-8
       - en_US.UTF-8
+	  - ja_JP.UTF-8
+    * The top item will also be passed to the update-locale command.
 	  
     mfts_timezone: "Asia/Tokyo"
     * This value will be passed to the *timezone* module.
