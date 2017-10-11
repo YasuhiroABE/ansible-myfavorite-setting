@@ -20,14 +20,18 @@ Role Variables
 
 ### Defaults
     mfts_packages:
-      - screen
-      - mlocate
-      - net-tools
-      - dnsutils
-      - iproute2
-      - lsof
-      - tcpdump
-      - nmap
+  	  - screen
+  	  - mlocate
+  	  - net-tools
+  	  - dnsutils
+  	  - iproute2
+  	  - lsof
+  	  - tcpdump
+  	  - nmap
+  	  - binutils
+  	  - cron-apt
+  	  - openssh-server
+	  - openntpd
 	* These packages will be installed as default.
  	
     mfts_additional_packages: []
@@ -43,7 +47,10 @@ Role Variables
 	  
     mfts_timezone: "Asia/Tokyo"
     * This value will be passed to the *timezone* module.
-	
+
+    mfts_sshd_listen_ipaddr: ''
+	* The sshd only listens on the specified ip address.
+
 Dependencies
 ------------
 
@@ -53,6 +60,8 @@ Example Playbook
 ----------------
 
     - hosts: all
+	  vars:
+        mfts_sshd_listen_hostprefix: 192.168.0.1
       roles:
 	    - ansible-myfavorite-setting
 

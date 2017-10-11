@@ -63,3 +63,25 @@
     regexp: "^autoremove"
     line: "autoremove -y"
   register: result
+
+- name: modify the sshd listen address
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^ListenAddress"
+    line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
+  when: mfts_sshd_listen_ipaddr
+  register: result
+
+- name: ssh modify the config file to disable password authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  register: result
+
+- name: enable ssh.service on systemd
+  systemd:
+    name: ssh
+    state: started
+    enabled: true
+  register: result

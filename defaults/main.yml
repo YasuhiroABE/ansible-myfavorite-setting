@@ -12,13 +12,21 @@ mfts_packages:
   - nmap
   - binutils
   - cron-apt
+  - openssh-server
 
-mfts_additional_packages:
+# host specific packages you would like to install.
+mfts_additional_packages: []
 
-mfts_removal_packages:
-  
+# host specific packages you would like to remove, even if the package installed by the previous list.
+mfts_removal_packages: []
+
+# The top item will be the system default.
 mfts_locales:
-  - ja_JP.UTF-8
   - en_US.UTF-8
+  - ja_JP.UTF-8
 
+# system-wide tiemzone setting
 mfts_timezone: "Asia/Tokyo"
+
+# sshd will only listen on the specified ip address.
+mfts_sshd_listen_ipaddr: ''
