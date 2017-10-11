@@ -69,7 +69,7 @@
     path: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
     line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
-  when: mfts_sshd_listen_ipaddr
+  when: mfts_sshd_listen_ipaddr != ''
   register: result
 
 - name: ssh modify the config file to disable password authentication
