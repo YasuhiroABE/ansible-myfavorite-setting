@@ -47,3 +47,19 @@
   timezone:
     name: "{{ mfts_timezone }}"
 
+- name: modify dist-upgrade setting in cron-apt config file
+  become: True
+  lineinfile:
+    path: /etc/cron-apt/action.d/3-download
+    regexp: "^dist-upgrade"
+    line: "dist-upgrade -y -o APT::Get::Show-Upgraded=true"
+  register: result
+
+- name: modify autoremove setting in cron-apt config file
+  become: True
+  lineinfile:
+    path: /etc/cron-apt/action.d/3-download
+    insertafter: "^autoclean"
+    regexp: "^autoremove"
+    line: "autoremove -y"
+  register: result

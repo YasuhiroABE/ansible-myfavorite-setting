@@ -11,6 +11,7 @@ mfts_packages:
   - tcpdump
   - nmap
   - binutils
+  - cron-apt
 
 mfts_additional_packages:
 
