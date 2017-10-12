@@ -1,5 +1,5 @@
-Role Name: My Favorite Settings
-=========
+YasuhiroABE.myfavorite-setting
+==============================
 
 This role sets up my favorite settings.
 
@@ -20,39 +20,39 @@ Role Variables
 
 ### Defaults
     mfts_packages:
-  	  - screen
-  	  - mlocate
-  	  - net-tools
-  	  - dnsutils
-  	  - iproute2
-  	  - lsof
-  	  - tcpdump
-  	  - nmap
-  	  - binutils
-  	  - cron-apt
-  	  - openssh-server
-	  - openntpd
-	* These packages will be installed as default.
- 	
+      - screen
+      - mlocate
+      - net-tools
+      - dnsutils
+      - iproute2
+      - lsof
+      - tcpdump
+      - nmap
+      - binutils
+      - cron-apt
+      - openssh-server
+      - openntpd
+    * These packages will be installed as default.
+     
     mfts_additional_packages: []
-	* Specified packages will be installed to the system.
-	
+    * Specified packages will be installed to the system.
+    
     mfts_removal_packages: []
-	* Specified packages will be removed from the system.
-	
+    * Specified packages will be removed from the system.
+    
     mfts_locales:
       - en_US.UTF-8
-	  - ja_JP.UTF-8
+      - ja_JP.UTF-8
     * The top item will also be passed to the update-locale command.
-	  
+      
     mfts_timezone: "Asia/Tokyo"
     * This value will be passed to the *timezone* module.
 
     mfts_sshd_listen_ipaddr: ''
-	* The sshd only listens on the specified ip address.
-	
-	mfts_hostname: "{{ ansible_hostname }}"
-	* set up hostname by the ansible hostname module.
+    * The sshd only listens on the specified ip address.
+    
+    mfts_hostname: "{{ ansible_hostname }}"
+    * set up hostname by the ansible hostname module.
 
 Dependencies
 ------------
@@ -63,10 +63,10 @@ Example Playbook
 ----------------
 
     - hosts: all
-	  vars:
+      vars:
         mfts_sshd_listen_hostprefix: 192.168.0.1
       roles:
-	    - YasuhiroABE.myfavorite-setting
+        - YasuhiroABE.myfavorite-setting
 
 License
 -------
