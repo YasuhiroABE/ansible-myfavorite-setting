@@ -50,6 +50,9 @@ Role Variables
 
     mfts_sshd_listen_ipaddr: ''
 	* The sshd only listens on the specified ip address.
+	
+	mfts_hostname: "{{ ansible_hostname }}"
+	* set up hostname by the ansible hostname module.
 
 Dependencies
 ------------
@@ -63,7 +66,7 @@ Example Playbook
 	  vars:
         mfts_sshd_listen_hostprefix: 192.168.0.1
       roles:
-	    - ansible-myfavorite-setting
+	    - YasuhiroABE.myfavorite-setting
 
 License
 -------

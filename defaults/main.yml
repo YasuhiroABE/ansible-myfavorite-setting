@@ -30,3 +30,6 @@ mfts_timezone: "Asia/Tokyo"
 
 # sshd will only listen on the specified ip address.
 mfts_sshd_listen_ipaddr: ''
+
+# set up hostname by the ansible hostname module.
+mfts_hostname: "{{ ansible_hostname }}"

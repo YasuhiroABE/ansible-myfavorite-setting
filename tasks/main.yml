@@ -1,49 +1,62 @@
 ---
 # tasks file for mfts
 
+- name: setup hostname
+  become: True
+  hostname: name="{{ mfts_hostname }}"
+
 - name: install packages
+  become: True
   apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
   with_items:
     - "{{ mfts_packages }}"
 
 - name: install additional packages
+  become: True
   apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
   with_items:
     - "{{ mfts_additional_packages }}"
 
 - name: remove packages
+  become: True
   apt: pkg={{ item }}
   state: absent
   with_items:
     - "{{ mfts_removal_packages }}"
 
 - name: change locales
+  become: True
   locale_gen:
     name: "{{ item }}"
   with_items: 
     - "{{ mfts_locales }}"
 
 - name: exec update-locale
+  become: True
   command: update-locale LANG="{{ mfts_locales[0] }}"
     
 - name: modify escape for screen
+  become: True
   lineinfile:
     path: /etc/screenrc
     regexp: "^escape"
     line: 'escape: "^t^t"'
 
 - name: modify hardstatus for screen
+  become: True
   lineinfile:
     path: /etc/screenrc
     regexp: "^hardstatus"
     line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
 - name: modify shelltitle for screen
+  become: True
   lineinfile:
     path: /etc/screenrc
     regexp: "^shelltitle"
     line: 'shelltitle: "{{ ansible_hostname }}"'
 
 - name: setting timezone
+  become: True
   timezone:
     name: "{{ mfts_timezone }}"
 
@@ -65,6 +78,7 @@
   register: result
 
 - name: modify the sshd listen address
+  become: True
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
@@ -73,6 +87,7 @@
   register: result
 
 - name: ssh modify the config file to disable password authentication
+  become: True
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
@@ -80,6 +95,7 @@
   register: result
 
 - name: enable ssh.service on systemd
+  become: True
   systemd:
     name: ssh
     state: started
