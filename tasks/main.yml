@@ -19,8 +19,7 @@
 
 - name: remove packages
   become: True
-  apt: pkg={{ item }}
-  state: absent
+  apt: pkg={{ item }} state=absent purge=yes
   with_items:
     - "{{ mfts_removal_packages }}"
 
