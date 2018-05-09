@@ -33,3 +33,6 @@ mfts_sshd_listen_ipaddr: ''
 
 # set up hostname by the ansible hostname module.
 mfts_hostname: "{{ ansible_hostname }}"
+
+# set up additional user's groups (e.g. { user: user01, groups: sudo })
+mfts_additional_groups: []

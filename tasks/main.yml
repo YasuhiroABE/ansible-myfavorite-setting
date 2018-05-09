@@ -100,3 +100,14 @@
     state: started
     enabled: true
   register: result
+  
+- name: additional user's groups
+  become: True
+  user:
+    name: "{{ item.user }}"
+    groups: "{{ item.groups }}"
+    append: yes
+  with_items:
+    - "{{ mfts_additional_groups }}"
+  register: result
+

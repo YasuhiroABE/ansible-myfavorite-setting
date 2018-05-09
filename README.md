@@ -54,6 +54,9 @@ Role Variables
     mfts_hostname: "{{ ansible_hostname }}"
     * set up hostname by the ansible hostname module.
 
+    mfts_additional_groups: []
+    * set up additional user's groups (e.g. { user: user01, groups: sudo })
+
 Dependencies
 ------------
 
