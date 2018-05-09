@@ -122,4 +122,13 @@
   with_items:
     - "{{ mfts_copy_files }}"
   regsiter: result
+  
+- name: modify /etc/sysctl.conf 
+  become: True
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  with_items:
+    - "{{ mfts_sysctl_rules }}"
+  register: result
 

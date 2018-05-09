@@ -19,6 +19,7 @@ Role Variables
 --------------
 
 ### Defaults
+
     mfts_packages:
       - screen
       - mlocate
@@ -61,6 +62,9 @@ Role Variables
     * set up file information which you want to copy
     * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 
+    mfts_sysctl_rules: []
+    * set up syctl rules
+    * e.g. { name: net.ipv4.ip_forward, value: 1 }
 
 Dependencies
 ------------

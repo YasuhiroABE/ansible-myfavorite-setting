@@ -38,7 +38,11 @@ mfts_hostname: "{{ ansible_hostname }}"
 mfts_additional_groups: []
 
 # set up file information which you want to copy
-# @format: - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
+# e.g. - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 mfts_copy_files: []
+
+# set up syctl rules
+# e.g. { name: net.ipv4.ip_forward, value: 1 }
+mfts_sysctl_rules: []
 
 
