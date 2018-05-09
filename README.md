@@ -57,6 +57,11 @@ Role Variables
     mfts_additional_groups: []
     * set up additional user's groups (e.g. { user: user01, groups: sudo })
 
+    mfts_copy_files: []
+    * set up file information which you want to copy
+    * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
+
+
 Dependencies
 ------------
 
