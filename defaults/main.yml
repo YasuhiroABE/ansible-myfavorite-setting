@@ -14,6 +14,13 @@ mfts_packages:
   - cron-apt
   - openssh-server
 
+## setup apt repository info
+## (e.g. "deb http://... bionic main")
+mfts_add_apt_repositories: []
+
+## remove old apt repository info 
+mfts_remove_apt_repositories: []
+
 # host specific packages you would like to install.
 mfts_additional_packages: []
 

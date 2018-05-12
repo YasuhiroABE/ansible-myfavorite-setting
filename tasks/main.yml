@@ -5,6 +5,22 @@
   become: True
   hostname: name="{{ mfts_hostname }}"
 
+- name: setup apt repository info
+  become: True
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mfts_add_apt_repositories }}"
+
+- name: remove apt repository info
+  become: True
+  apt_repository:
+    repo: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ mfts_remove_apt_repositories }}"
+
 - name: install packages
   become: True
   apt: pkg={{ item }} update_cache=yes cache_valid_time=1200

@@ -34,7 +34,14 @@ Role Variables
       - openssh-server
       - openntpd
     * These packages will be installed as default.
-     
+
+	## setup apt repository info
+	## (e.g. "deb http://... bionic main")
+	mfts_add_apt_repositories: []
+
+	## remove old apt repository info 
+	mfts_remove_apt_repositories: []
+
     mfts_additional_packages: []
     * Specified packages will be installed to the system.
     
