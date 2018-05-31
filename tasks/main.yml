@@ -53,20 +53,20 @@
 - name: modify escape for screen
   become: True
   lineinfile:
-    path: /etc/screenrc
+    dest: /etc/screenrc
     regexp: "^escape"
     line: 'escape: "^t^t"'
 
 - name: modify hardstatus for screen
   become: True
   lineinfile:
-    path: /etc/screenrc
+    dest: /etc/screenrc
     regexp: "^hardstatus"
     line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
 - name: modify shelltitle for screen
   become: True
   lineinfile:
-    path: /etc/screenrc
+    dest: /etc/screenrc
     regexp: "^shelltitle"
     line: 'shelltitle: "{{ mfts_hostname }}"'
 
