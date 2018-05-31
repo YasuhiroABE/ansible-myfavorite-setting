@@ -137,7 +137,7 @@
     mode:  "{{ item.mode }}"
   with_items:
     - "{{ mfts_copy_files }}"
-  regsiter: result
+  register: result
   
 - name: modify /etc/sysctl.conf 
   become: True
