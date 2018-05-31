@@ -78,7 +78,7 @@
 - name: modify dist-upgrade setting in cron-apt config file
   become: True
   lineinfile:
-    path: /etc/cron-apt/action.d/3-download
+    dest: /etc/cron-apt/action.d/3-download
     regexp: "^dist-upgrade"
     line: "dist-upgrade -y -o APT::Get::Show-Upgraded=true"
   register: result
@@ -86,7 +86,7 @@
 - name: modify autoremove setting in cron-apt config file
   become: True
   lineinfile:
-    path: /etc/cron-apt/action.d/3-download
+    dest: /etc/cron-apt/action.d/3-download
     insertafter: "^autoclean"
     regexp: "^autoremove"
     line: "autoremove -y"
@@ -95,7 +95,7 @@
 - name: modify the sshd listen address
   become: True
   lineinfile:
-    path: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
     line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
   when: mfts_sshd_listen_ipaddr != ''
@@ -104,7 +104,7 @@
 - name: ssh modify the config file to disable password authentication
   become: True
   lineinfile:
-    path: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
     line: "PasswordAuthentication no"
   register: result
