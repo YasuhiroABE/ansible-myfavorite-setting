@@ -55,7 +55,7 @@
   lineinfile:
     dest: /etc/screenrc
     regexp: "^escape"
-    line: 'escape: "^t^t"'
+    line: 'escape "^t^t"'
 
 - name: modify hardstatus for screen
   become: True
@@ -68,7 +68,7 @@
   lineinfile:
     dest: /etc/screenrc
     regexp: "^shelltitle"
-    line: 'shelltitle: "{{ mfts_hostname }}"'
+    line: 'shelltitle  "{{ mfts_hostname }}"'
 
 - name: setting timezone
   become: True
