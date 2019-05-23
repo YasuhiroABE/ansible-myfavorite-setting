@@ -23,21 +23,15 @@
 
 - name: install packages
   become: True
-  apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
-  with_items:
-    - "{{ mfts_packages }}"
+  apt: pkg="{{ mfts_packages }}" update_cache=yes cache_valid_time=1200
 
 - name: install additional packages
   become: True
-  apt: pkg={{ item }} update_cache=yes cache_valid_time=1200
-  with_items:
-    - "{{ mfts_additional_packages }}"
+  apt: pkg="{{ mfts_additional_packages }}" update_cache=yes cache_valid_time=1200
 
 - name: remove packages
   become: True
-  apt: pkg={{ item }} state=absent purge=yes
-  with_items:
-    - "{{ mfts_removal_packages }}"
+  apt: pkg="{{ mfts_removal_packages }}" state=absent purge=yes
 
 - name: change locales
   become: True
