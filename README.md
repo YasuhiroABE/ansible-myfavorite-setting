@@ -9,11 +9,10 @@ Requirements
 This role is tested on the following platforms.
 
 ### Ansible
-- Version 2.4
+- Version 2.7
 
 ### Distributions
-- Ubuntu 16.04
-- Debian 9
+- Ubuntu 18.04
 
 Role Variables
 --------------
@@ -59,7 +58,7 @@ Role Variables
     mfts_sshd_listen_ipaddr: ''
     * The sshd only listens on the specified ip address.
     
-    mfts_hostname: "{{ ansible_hostname }}"
+    mfts_hostname: "{{ inventory_hostname }}"
     * set up hostname by the ansible hostname module.
 
     mfts_additional_groups: []
@@ -81,11 +80,18 @@ N/A
 Example Playbook
 ----------------
 
+### playbook.yaml
+
     - hosts: all
       vars:
         mfts_sshd_listen_hostprefix: 192.168.0.1
       roles:
         - YasuhiroABE.myfavorite-setting
+
+### host.ini file
+
+    [all]
+	configured-hostname ansible_host=127.0.0.1
 
 License
 -------
