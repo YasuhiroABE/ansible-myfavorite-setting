@@ -18,7 +18,7 @@ mfts_packages:
 ## (e.g. "deb http://... bionic main")
 mfts_add_apt_repositories: []
 
-## remove old apt repository info 
+## remove old apt repository info
 mfts_remove_apt_repositories: []
 
 # host specific packages you would like to install.
@@ -51,5 +51,3 @@ mfts_copy_files: []
 # set up syctl rules
 # e.g. { name: net.ipv4.ip_forward, value: 1 }
 mfts_sysctl_rules: []
-
-

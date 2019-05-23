@@ -37,13 +37,13 @@
   become: True
   locale_gen:
     name: "{{ item }}"
-  with_items: 
+  with_items:
     - "{{ mfts_locales }}"
 
 - name: exec update-locale
   become: True
   command: update-locale LANG="{{ mfts_locales[0] }}"
-    
+
 - name: modify escape for screen
   become: True
   lineinfile:
@@ -92,7 +92,7 @@
     dest: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
     line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
-  when: mfts_sshd_listen_ipaddr != ''
+  when: mfts_sshd_listen_ipaddr | length > 0
   register: result
 
 - name: ssh modify the config file to disable password authentication
@@ -110,7 +110,7 @@
     state: started
     enabled: true
   register: result
-  
+
 - name: additional user's groups
   become: True
   user:
@@ -132,8 +132,8 @@
   with_items:
     - "{{ mfts_copy_files }}"
   register: result
-  
-- name: modify /etc/sysctl.conf 
+
+- name: modify /etc/sysctl.conf
   become: True
   sysctl:
     name: "{{ item.name }}"
@@ -141,4 +141,3 @@
   with_items:
     - "{{ mfts_sysctl_rules }}"
   register: result
-
