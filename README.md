@@ -9,7 +9,7 @@ Requirements
 This role is tested on the following platforms.
 
 ### Ansible
-- Version 2.7
+- Version 2.9
 
 ### Distributions
 - Ubuntu 20.04
