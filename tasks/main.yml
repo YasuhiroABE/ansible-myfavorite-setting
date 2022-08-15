@@ -111,7 +111,7 @@
     enabled: true
   register: result
 
-- name: additional user's groups
+- name: additional user groups
   become: True
   user:
     name: "{{ item.user }}"
@@ -119,6 +119,18 @@
     append: yes
   with_items:
     - "{{ mfts_additional_groups }}"
+  register: result
+
+- name: manage file and directory before copying files.
+  become: True
+  file:
+    path:  "{{ item.path }}"
+    state: "{{ item.state }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode:  "{{ item.mode }}"
+  with_items:
+    - "{{ mfts_setup_directory }}"
   register: result
 
 - name: copy files using template
@@ -141,3 +153,72 @@
   with_items:
     - "{{ mfts_sysctl_rules }}"
   register: result
+
+## install ufw module if enabled
+- name: install ufw related packages
+  become: True
+  apt:
+    pkg="{{ mfts_ufw_packages }}"
+    update_cache=yes
+    cache_valid_time=1200
+  when: mfts_ufw_allow_rules
+    or mfts_ufw_service_rules
+    or mfts_ipmasquerade_rules
+    or mfts_ufw_enable
+  register: result
+
+##  setup ufw module
+- name: allow/deny from specific network
+  become: True
+  ufw:
+    rule: "{{ item.type }}"
+    from_ip: "{{ item.from_ip }}"
+  with_items:
+    - "{{ mfts_ufw_allow_rules }}"
+  register: result
+
+- name: allow/deny connection to service from specific network
+  become: True
+  ufw:
+    rule: "{{ item.type }}"
+    port: "{{ item.port }}"
+    from_ip: "{{ item.from_ip }}"
+    to_ip: "{{ item.to_ip }}"
+  with_items:
+    - "{{ mfts_ufw_service_rules }}"
+  register: result
+
+## setup iptables module for ip masquerade
+- name: Enable IP Masquerade
+  become: True
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: "{{ item.interface }}"
+    jump: MASQUERADE
+  with_items:
+    - "{{ mfts_ipmasquerade_rules }}"
+
+- name: Deny everything and enable UFW
+  become: True
+  ufw:
+    state: enabled
+    policy: deny
+  when: mfts_ufw_enable
+
+- name: Enable logging
+  become: True
+  ufw:
+    logging: on
+  when: mfts_ufw_enable_logging
+
+## setup systemd module for daemon services
+- name: Manage systemd services
+  become: True
+  systemd:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    enabled: "{{ item.enabled | default('no') }}"
+    daemon_reload: "{{ item.daemon_reload | default('no') }}"
+  with_items:
+    - "{{ mfts_systemd_rules }}"

@@ -44,6 +44,9 @@ mfts_hostname: "{{ inventory_hostname }}"
 # set up additional user's groups (e.g. { user: "user01", groups: "sudo" })
 mfts_additional_groups: []
 
+# setup empty directory or files (e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" })
+mfts_setup_directory: []
+
 # set up file information which you want to copy
 # e.g. - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 mfts_copy_files: []
@@ -51,3 +54,20 @@ mfts_copy_files: []
 # set up syctl rules
 # e.g. { name: net.ipv4.ip_forward, value: 1 }
 mfts_sysctl_rules: []
+
+# setup ufw firewall for Ubuntu
+mfts_ufw_packages: ["ufw"]
+mfts_ufw_enable: False
+mfts_ufw_enable_logging: False
+# e.g. { type: "allow", from_ip: "10.0.0.0/8" }
+mfts_ufw_allow_rules: []
+# e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8", to_ip: "192.168.1.0/24" }
+mfts_ufw_service_rules: []
+
+# setup iptables module for ip masquerade (please use ufw module for other configurations)
+# e.g. { interface: "enp1s0" }
+mfts_ipmasquerade_rules: []
+
+# setup systemd services
+# e.g. { name: "ssh.service", state: "started", enabled: "no", daemon_reload: "no"  }
+mfts_systemd_rules: []
