@@ -2,11 +2,11 @@
 # tasks file for mfts
 
 - name: setup hostname
-  become: True
+  become: true
   hostname: name="{{ mfts_hostname }}"
 
 - name: setup apt repository info
-  become: True
+  become: true
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -14,7 +14,7 @@
     - "{{ mfts_add_apt_repositories }}"
 
 - name: remove apt repository info
-  become: True
+  become: true
   apt_repository:
     repo: "{{ item }}"
     state: absent
@@ -22,55 +22,55 @@
     - "{{ mfts_remove_apt_repositories }}"
 
 - name: install packages
-  become: True
+  become: true
   apt: pkg="{{ mfts_packages }}" update_cache=yes cache_valid_time=1200
 
 - name: install additional packages
-  become: True
+  become: true
   apt: pkg="{{ mfts_additional_packages }}" update_cache=yes cache_valid_time=1200
 
 - name: remove packages
-  become: True
+  become: true
   apt: pkg="{{ mfts_removal_packages }}" state=absent purge=yes
 
 - name: change locales
-  become: True
+  become: true
   locale_gen:
     name: "{{ item }}"
   with_items:
     - "{{ mfts_locales }}"
 
 - name: exec update-locale
-  become: True
+  become: true
   command: update-locale LANG="{{ mfts_locales[0] }}"
 
 - name: modify escape for screen
-  become: True
+  become: true
   lineinfile:
     dest: /etc/screenrc
     regexp: "^escape"
     line: 'escape "^t^t"'
 
 - name: modify hardstatus for screen
-  become: True
+  become: true
   lineinfile:
     dest: /etc/screenrc
     regexp: "^hardstatus"
     line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
 - name: modify shelltitle for screen
-  become: True
+  become: true
   lineinfile:
     dest: /etc/screenrc
     regexp: "^shelltitle"
     line: 'shelltitle  "{{ mfts_hostname }}"'
 
 - name: setting timezone
-  become: True
+  become: true
   timezone:
     name: "{{ mfts_timezone }}"
 
 - name: modify dist-upgrade setting in cron-apt config file
-  become: True
+  become: true
   lineinfile:
     dest: /etc/cron-apt/action.d/3-download
     regexp: "^dist-upgrade"
@@ -78,7 +78,7 @@
   register: result
 
 - name: modify autoremove setting in cron-apt config file
-  become: True
+  become: true
   lineinfile:
     dest: /etc/cron-apt/action.d/3-download
     insertafter: "^autoclean"
@@ -87,7 +87,7 @@
   register: result
 
 - name: modify the sshd listen address
-  become: True
+  become: true
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^ListenAddress"
@@ -96,7 +96,7 @@
   register: result
 
 - name: ssh modify the config file to disable password authentication
-  become: True
+  become: true
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
@@ -104,7 +104,7 @@
   register: result
 
 - name: enable ssh.service on systemd
-  become: True
+  become: true
   systemd:
     name: ssh
     state: started
@@ -112,7 +112,7 @@
   register: result
 
 - name: additional user groups
-  become: True
+  become: true
   user:
     name: "{{ item.user }}"
     groups: "{{ item.groups }}"
@@ -122,7 +122,7 @@
   register: result
 
 - name: manage file and directory before copying files.
-  become: True
+  become: true
   file:
     path:  "{{ item.path }}"
     state: "{{ item.state }}"
@@ -134,7 +134,7 @@
   register: result
 
 - name: copy files using template
-  become: True
+  become: true
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -146,7 +146,7 @@
   register: result
 
 - name: modify /etc/sysctl.conf
-  become: True
+  become: true
   sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
@@ -156,7 +156,7 @@
 
 ## install ufw module if enabled
 - name: install ufw related packages
-  become: True
+  become: true
   apt:
     pkg="{{ mfts_ufw_packages }}"
     update_cache=yes
@@ -169,7 +169,7 @@
 
 ##  setup ufw module
 - name: allow/deny from specific network
-  become: True
+  become: true
   ufw:
     rule: "{{ item.type }}"
     from_ip: "{{ item.from_ip }}"
@@ -178,7 +178,7 @@
   register: result
 
 - name: allow/deny connection to service from specific network
-  become: True
+  become: true
   ufw:
     rule: "{{ item.type }}"
     port: "{{ item.port }}"
@@ -190,7 +190,7 @@
 
 ## setup iptables module for ip masquerade
 - name: Enable IP Masquerade
-  become: True
+  become: true
   iptables:
     table: nat
     chain: POSTROUTING
@@ -200,21 +200,21 @@
     - "{{ mfts_ipmasquerade_rules }}"
 
 - name: Deny everything and enable UFW
-  become: True
+  become: true
   ufw:
     state: enabled
     policy: deny
   when: mfts_ufw_enable
 
 - name: Enable logging
-  become: True
+  become: true
   ufw:
     logging: on
   when: mfts_ufw_enable_logging
 
 ## setup systemd module for daemon services
 - name: Manage systemd services
-  become: True
+  become: true
   systemd:
     name: "{{ item.name }}"
     state: "{{ item.state }}"
