@@ -162,8 +162,8 @@
     update_cache=yes
     cache_valid_time=1200
   when: mfts_ufw_allow_rules
-    or mfts_ufw_service_rules
-    or mfts_ipmasquerade_rules
+    or mfts_ufw_service_rules | length > 0
+    or mfts_ipmasquerade_rules | length > 0
     or mfts_ufw_enable
   register: result
 

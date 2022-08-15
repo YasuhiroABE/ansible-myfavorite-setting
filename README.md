@@ -76,10 +76,10 @@ Role Variables
     * set up syctl rules
     * e.g. { name: net.ipv4.ip_forward, value: 1 }
 
-    mfts_ufw_enable: False
+    mfts_ufw_enable: false
     # If True, UFW changes the default policy to deny.
 
-    mfts_ufw_enable_logging: False
+    mfts_ufw_enable_logging: false
     # If True, UFW enables the logging mode.
 
     mfts_ufw_allow_rules: []
