@@ -51,6 +51,12 @@ mfts_setup_directory: []
 # e.g. - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 mfts_copy_files: []
 
+# e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
+mfts_lineinfile_after_copyfiles: []
+
+# e.g. - { command: "echo Hello", become: "no" }
+mfts_command_after_copyfiles: []
+
 # set up syctl rules
 # e.g. { name: net.ipv4.ip_forward, value: 1 }
 mfts_sysctl_rules: []
@@ -63,6 +69,8 @@ mfts_ufw_enable_logging: false
 mfts_ufw_allow_rules: []
 # e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8", to_ip: "192.168.1.0/24" }
 mfts_ufw_service_rules: []
+# e.g. { type: "allow", route: "yes", interface: "enp1s0", direction: "out", src: "192.168.1.0/24" }
+mfts_ufw_incoming_forward_rules: []
 
 # setup iptables module for ip masquerade (please use ufw module for other configurations)
 # e.g. { interface: "enp1s0" }

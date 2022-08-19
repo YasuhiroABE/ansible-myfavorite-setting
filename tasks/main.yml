@@ -145,6 +145,24 @@
     - "{{ mfts_copy_files }}"
   register: result
 
+- name: after copying files, modify these or other files using lineinfile
+  become: true
+  lineinfile:
+    path: "{{ item.path }}"
+    state: "{{ item.state | default('present') }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ mfts_lineinfile_after_copyfiles }}"
+  register: result
+
+- name: after copying files, execute maintenance command using command
+  become: "{{ item.become | default('no') }}"
+  command: "{{ item.command }}"
+  with_items:
+    - "{{ mfts_command_after_copyfiles }}"
+  register: result
+
 - name: modify /etc/sysctl.conf
   become: true
   sysctl:
@@ -188,6 +206,18 @@
     - "{{ mfts_ufw_service_rules }}"
   register: result
 
+- name: allow/deny rules for incoming (from outside) forward rule
+  become: true
+  ufw:
+    rule: "{{ item.type }}"
+    route: "{{ item.route }}"
+    interface: "{{ item.interface }}"
+    direction: "{{ item.direction }}"
+    src: "{{ item.src }}"
+  with_items:
+    - "{{ mfts_ufw_incoming_forward_rules }}"
+  register: result
+
 ## setup iptables module for ip masquerade
 - name: Enable IP Masquerade
   become: true
@@ -198,6 +228,7 @@
     jump: MASQUERADE
   with_items:
     - "{{ mfts_ipmasquerade_rules }}"
+  register: result
 
 - name: Deny everything and enable UFW
   become: true
