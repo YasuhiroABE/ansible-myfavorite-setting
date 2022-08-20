@@ -236,12 +236,14 @@
     state: enabled
     policy: deny
   when: mfts_ufw_enable
+  register: result
 
 - name: Enable logging
   become: true
   ufw:
     logging: on
   when: mfts_ufw_enable_logging
+  register: result
 
 ## setup systemd module for daemon services
 - name: Manage systemd services
@@ -253,3 +255,21 @@
     daemon_reload: "{{ item.daemon_reload | default('no') }}"
   with_items:
     - "{{ mfts_systemd_rules }}"
+  register: result
+
+## setup cronjobs
+- name: Manage cronjobs
+  become: True
+  cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute | default('*') }}"
+    hour: "{{ item.hour | default('*') }}"
+    day: "{{ item.day | default('*') }}"
+    month: "{{ item.month | default('*') }}"
+    weekday: "{{ item.weekday | default('*') }}"
+    job: "{{ item.job }}"
+    state: "{{ item.state | default('present') }}"
+    user: "{{ item.user | default('root') }}"
+  with_items:
+    - "{{ mfts_cronjob_rules }}"
+  register: result

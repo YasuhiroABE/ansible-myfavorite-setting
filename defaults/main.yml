@@ -79,3 +79,7 @@ mfts_ipmasquerade_rules: []
 # setup systemd services
 # e.g. { name: "ssh.service", state: "started", enabled: "no", daemon_reload: "no"  }
 mfts_systemd_rules: []
+
+# setup cronjobs
+# e.g. { name: "echo hello", minute: "2", job: "echo Hello world!" }  ## Each time related default value is "*"
+mfts_cronjob_rules: []

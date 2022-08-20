@@ -103,6 +103,10 @@ Role Variables
     mfts_systemd_rules: [] ## default: enabled: "no", daemon_reload: "no"
     # e.g. { name: "nginx.service", state: "started", enabled: "yes", daemon_reload: "no" }
 
+    mfts_cronjob_rules: []
+    # e.g. { name: "echo hello", minute: "2", job: "echo Hello world!" }  ## Each time related default value is "*"
+
+
 Dependencies
 ------------
 
@@ -160,4 +164,3 @@ Author Information
 ------------------
 
 [Yasuhiro ABE](http://www.yasundial.org/foaf.xml)
-

@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: myfavorite-setting
   author: Yasuhiro ABE
   description: Setup fprobe-ng package on Ubuntu.
   license: Apache License 2.0
