@@ -202,6 +202,7 @@
     port: "{{ item.port }}"
     from_ip: "{{ item.from_ip }}"
     to_ip: "{{ item.to_ip }}"
+    proto: "{{ item.proto | default('tcp') }}"
   with_items:
     - "{{ mfts_ufw_service_rules }}"
   register: result
