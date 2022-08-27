@@ -35,12 +35,12 @@ Role Variables
       - openntpd
     * These packages will be installed as default.
 
-    ## setup apt repository info
-    ## (e.g. "deb http://... bionic main")
     mfts_add_apt_repositories: []
+    * setup apt repository info
+    * (e.g. "deb http://... bionic main")
 
-    ## remove old apt repository info 
     mfts_remove_apt_repositories: []
+    * remove old apt repository info 
 
     mfts_additional_packages: []
     * Specified packages will be installed to the system.
@@ -66,39 +66,54 @@ Role Variables
     * set up additional user's groups (e.g. { user: user01, groups: sudo })
 
     mfts_setup_directory: []
-    # e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" }
+    * e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" }
 
     mfts_copy_files: []
     * set up file information which you want to copy
     * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 
     mfts_lineinfile_after_copyfiles: []  ## default: state: "present"
-    # execute lineinfile module after copying files
-    # e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
+    * execute lineinfile module after copying files
+    * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
 
     mfts_command_after_copyfiles: [] ## default: become: "no"
-    # execute command after executing ilninfile module
-    # e.g. - { command: "echo Hello", become: "no" }  ## Note: the default value of become is "no"
+    * execute command after executing ilninfile module
+    * e.g. - { command: "echo Hello", become: "no" }  ## Note: the default value of become is "no"
 
     mfts_sysctl_rules: []
     * set up syctl rules
     * e.g. { name: net.ipv4.ip_forward, value: 1 }
 
+    mfts_ufw_packages: ["ufw"]
+    * install the ufw deb package
+
     mfts_ufw_enable: false
-    # If True, UFW changes the default policy to deny.
+    * If True, UFW changes the default policy to deny.
 
     mfts_ufw_enable_logging: false
-    # If True, UFW enables the logging mode.
+    * If True, UFW enables the logging mode.
 
     mfts_ufw_allow_rules: []
-    # e.g. { type: "allow", from_ip: "10.0.0.0/8" }
+    * e.g. { type: "allow", from_ip: "10.0.0.0/8" }
 
     mfts_ufw_service_rules: []
-    # e.g. { type: "allow", port: 22, from_ip: "10.0.0.0/8", to_ip: "192.168.1.1/32" }
+    * e.g. { type: "allow", port: 22, from_ip: "10.0.0.0/8", to_ip: "192.168.1.1/32" }
+    
+    mfts_ufw_incoming_forward_rules: []
+    * e.g. { type: "allow", route: "yes(default)", to_ip: "192.168.1.22", to_port: "22", proto: "tcp(default)" }
 
-    mfts_ipmasquerade_rules: []
-    # If set, the iptables enables ip masquerade for the specified interface.
-    # e.g. { interface: "enp1s0" }
+    mfts_ufw_outgoing_forward_rules: []
+    * e.g. { type: "allow", route: "yes(default)", from_ip: "192.168.1.22", from_port: "22", proto: "tcp(default)" }
+
+    mfts_iptables_masquerade_rules: []
+    * If set, the iptables enables ip masquerade for the specified interface.
+    * e.g. { interface: "enp1s0" }
+    
+    mfts_iptables_dnat_portforwarding_rules: []
+    * e.g. { in_interface: "enp1s0", incoming_port: "20022", dest_port: "22", dest: "192.168.1.22" }
+
+    mfts_iptables_snat_portforwarding_rules: []
+    * { protocol: "tcp(default)", dst: "192.168.1.22", dst_port: "22", src: "192.168.1.1", src_port: "20022" }
 
     mfts_systemd_rules: [] ## default: enabled: "no", daemon_reload: "no"
     # e.g. { name: "nginx.service", state: "started", enabled: "yes", daemon_reload: "no" }
