@@ -158,7 +158,7 @@
 
 - name: after copying files, execute maintenance command using command
   become: "{{ item.become | default('no') }}"
-  command: "{{ item.command }}"
+  shell: "{{ item.command }}"
   with_items:
     - "{{ mfts_command_after_copyfiles }}"
   register: result
@@ -207,18 +207,29 @@
     - "{{ mfts_ufw_service_rules }}"
   register: result
 
-- name: allow/deny rules for incoming (from outside) forward rule
-  become: true
+- name: allow/deny forwarding incoming packet
   ufw:
     rule: "{{ item.type }}"
-    route: "{{ item.route }}"
-    interface: "{{ item.interface }}"
-    direction: "{{ item.direction }}"
-    src: "{{ item.src }}"
+    route: "{{ item.route | default('yes') }}"
+    to_ip: "{{ item.to_ip }}"
+    to_port: "{{ item.to_port }}"
+    proto: "{{ item.proto | default('tcp') }}"
   with_items:
     - "{{ mfts_ufw_incoming_forward_rules }}"
   register: result
 
+## setup ufw outgoing forward rules
+- name: allow/deny forwarding outgoing packet
+  ufw:
+    rule: "{{ item.type }}"
+    route: "{{ item.route | default('yes') }}"
+    from_ip: "{{ item.from_ip }}"
+    from_port: "{{ item.from_port }}"
+    proto: "{{ item.proto | default('tcp') }}"
+  with_items:
+    - "{{ mfts_ufw_outgoing_forward_rules }}"
+  register: result
+  
 ## setup iptables module for ip masquerade
 - name: Enable IP Masquerade
   become: true
@@ -226,11 +237,40 @@
     table: nat
     chain: POSTROUTING
     out_interface: "{{ item.interface }}"
+    source: "{{ item.source }}"
     jump: MASQUERADE
   with_items:
-    - "{{ mfts_ipmasquerade_rules }}"
+    - "{{ mfts_iptables_masquerade_rules }}"
   register: result
 
+- name: Forwarding incoming (from outside) access to internal service
+  become: true
+  iptables:
+    table: nat
+    chain: PREROUTING
+    in_interface: "{{ item.in_interface }}"
+    protocol: "{{ item.protocol | default('tcp') }}"
+    jump: DNAT
+    destination_port: "{{ item.incoming_port }}"
+    to_destination: "{{ item.dest }}:{{ item.dest_port }}"
+  with_items:
+    - "{{ mfts_iptables_dnat_portforwarding_rules }}"
+  register: result
+
+- name: Set the return address for the forwarding incoming packets
+  become: true
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    protocol: "{{ item.protocol | default('tcp') }}"
+    jump: SNAT
+    destination: "{{ item.dest }}"
+    destination_port: "{{ item.dest_port }}"
+    to_source: "{{ item.src }}:{{ item.src_port }}"
+  with_items:
+    - "{{ mfts_iptables_snat_portforwarding_rules }}"
+  register: result
+  
 - name: Deny everything and enable UFW
   become: true
   ufw:

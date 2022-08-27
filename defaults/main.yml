@@ -67,14 +67,21 @@ mfts_ufw_enable: false
 mfts_ufw_enable_logging: false
 # e.g. { type: "allow", from_ip: "10.0.0.0/8" }
 mfts_ufw_allow_rules: []
-# e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8", to_ip: "192.168.1.0/24" }
+# e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8" }
 mfts_ufw_service_rules: []
-# e.g. { type: "allow", route: "yes", interface: "enp1s0", direction: "out", src: "192.168.1.0/24" }
+# e.g. { type: "allow", route: "yes(default)", to_ip: "192.168.1.22", to_port: "22", proto: "tcp(default)" }
 mfts_ufw_incoming_forward_rules: []
+# e.g. { type: "allow", route: "yes(default)", from_ip: "192.168.1.22", from_port: "22", proto: "tcp(default)" }
+mfts_ufw_outgoing_forward_rules: []
 
+# setup iptables firewall rules
+# e.g. { in_interface: "enp1s0", incoming_port: "20022", dest_port: "22", dest: "192.168.1.22" }
+mfts_iptables_dnat_portforwarding_rules: []
+# e.g. { protocol: "tcp(default)", dst: "192.168.1.22", dst_port: "22", src: "192.168.1.1", src_port: "20022" }
+mfts_iptables_snat_portforwarding_rules: []
 # setup iptables module for ip masquerade (please use ufw module for other configurations)
-# e.g. { interface: "enp1s0" }
-mfts_ipmasquerade_rules: []
+# e.g. { interface: "enp1s0", source: "192.168.100.1/24" }
+mfts_iptables_masquerade_rules: []
 
 # setup systemd services
 # e.g. { name: "ssh.service", state: "started", enabled: "no", daemon_reload: "no"  }
