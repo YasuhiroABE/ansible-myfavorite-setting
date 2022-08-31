@@ -92,3 +92,6 @@ mfts_systemd_rules: []
 # setup cronjobs
 # e.g. { name: "echo hello", minute: "2", job: "echo Hello world!" }  ## Each time related default value is "*"
 mfts_cronjob_rules: []
+
+## same as mfts_command_after_copyfiles
+mfts_command_atlast: []

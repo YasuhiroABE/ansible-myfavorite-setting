@@ -156,7 +156,7 @@
     - "{{ mfts_lineinfile_after_copyfiles }}"
   register: result
 
-- name: after copying files, execute maintenance command using command
+- name: after copying files, execute maintenance command using the shell module
   become: "{{ item.become | default('no') }}"
   shell: "{{ item.command }}"
   with_items:
@@ -181,7 +181,7 @@
     cache_valid_time=1200
   when: mfts_ufw_allow_rules
     or mfts_ufw_service_rules | length > 0
-    or mfts_ipmasquerade_rules | length > 0
+    or mfts_iptables_masquerade_rules | length > 0
     or mfts_ufw_enable
   register: result
 
@@ -223,6 +223,7 @@
   ufw:
     rule: "{{ item.type }}"
     route: "{{ item.route | default('yes') }}"
+    from_ip: "{{ item.from_ip | default('any') }}"
     to_ip: "{{ item.to_ip }}"
     to_port: "{{ item.to_port }}"
     proto: "{{ item.proto | default('tcp') }}"
@@ -235,6 +236,7 @@
   ufw:
     rule: "{{ item.type }}"
     route: "{{ item.route | default('yes') }}"
+    to_ip: "{{ item.to_ip | default('any') }}"
     from_ip: "{{ item.from_ip }}"
     from_port: "{{ item.from_port }}"
     proto: "{{ item.proto | default('tcp') }}"
@@ -325,4 +327,12 @@
     user: "{{ item.user | default('root') }}"
   with_items:
     - "{{ mfts_cronjob_rules }}"
+  register: result
+
+## post processing tasks
+- name: post execute maintenance command using the shell module
+  become: "{{ item.become | default('no') }}"
+  shell: "{{ item.command }}"
+  with_items:
+    - "{{ mfts_command_atlast }}"
   register: result

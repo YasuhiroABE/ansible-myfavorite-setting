@@ -124,6 +124,8 @@ Role Variables
     mfts_cronjob_rules: []
     # e.g. { name: "echo hello", minute: "2", job: "echo Hello world!" }  ## Each time related default value is "*"
 
+    mfts_command_atlast: []
+    # same as mfts_command_after_copyfiles
 
 Dependencies
 ------------
