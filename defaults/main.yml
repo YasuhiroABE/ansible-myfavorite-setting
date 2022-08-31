@@ -69,6 +69,8 @@ mfts_ufw_enable_logging: false
 mfts_ufw_allow_rules: []
 # e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8" }
 mfts_ufw_service_rules: []
+# e.g. { type: "allow", port: "67", interface: "enp2s0", direction: "in", proto: "tcp(default)" }
+mfts_ufw_broadcast_rules: []
 # e.g. { type: "allow", route: "yes(default)", to_ip: "192.168.1.22", to_port: "22", proto: "tcp(default)" }
 mfts_ufw_incoming_forward_rules: []
 # e.g. { type: "allow", route: "yes(default)", from_ip: "192.168.1.22", from_port: "22", proto: "tcp(default)" }

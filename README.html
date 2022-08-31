@@ -1,0 +1,223 @@
+<h1 id="yasuhiroabemyfavoritesetting">YasuhiroABE.myfavorite-setting</h1>
+
+<p>This role sets up my favorite settings for ubuntu.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>This role is tested on the following platforms.</p>
+
+<h3 id="ansible">Ansible</h3>
+
+<ul>
+<li>Version 2.9</li>
+</ul>
+
+<h3 id="distributions">Distributions</h3>
+
+<ul>
+<li>Ubuntu 20.04</li>
+<li>Ubuntu 22.04</li>
+</ul>
+
+<h2 id="role-variables">Role Variables</h2>
+
+<h3 id="defaults">Defaults</h3>
+
+<pre><code>mfts_packages:
+  - screen
+  - mlocate
+  - net-tools
+  - dnsutils
+  - iproute2
+  - lsof
+  - tcpdump
+  - nmap
+  - binutils
+  - cron-apt
+  - openssh-server
+  - openntpd
+* These packages will be installed as default.
+
+mfts_add_apt_repositories: []
+* setup apt repository info
+* (e.g. &quot;deb http://... bionic main&quot;)
+
+mfts_remove_apt_repositories: []
+* remove old apt repository info 
+
+mfts_additional_packages: []
+* Specified packages will be installed to the system.
+
+mfts_removal_packages: []
+* Specified packages will be removed from the system.
+
+mfts_locales:
+  - en_US.UTF-8
+  - ja_JP.UTF-8
+* The top item will also be passed to the update-locale command.
+
+mfts_timezone: &quot;Asia/Tokyo&quot;
+* This value will be passed to the *timezone* module.
+
+mfts_sshd_listen_ipaddr: ''
+* The sshd only listens on the specified ip address.
+
+mfts_hostname: &quot;{{ inventory_hostname }}&quot;
+* set up hostname by the ansible hostname module.
+
+mfts_additional_groups: []
+* set up additional user's groups (e.g. { user: user01, groups: sudo })
+
+mfts_setup_directory: []
+* e.g. { path: &quot;/etc/..&quot;, state: &quot;directory&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0755&quot; }
+
+mfts_copy_files: []
+* set up file information which you want to copy
+* { src:&quot;foo.txt&quot;, dest:&quot;/tmp/foo.txt&quot;, owner:&quot;root&quot;, group:&quot;root&quot;, mode:&quot;0644&quot; }
+
+mfts_lineinfile_after_copyfiles: []  ## default: state: &quot;present&quot;
+* execute lineinfile module after copying files
+* e.g. - { path: &quot;/etc/ca-certificates.conf&quot;, regexp: &quot;^local/www.example.com.crt$&quot;, line: &quot;local/www.example.com.crt&quot;, state: &quot;present&quot; }
+
+mfts_command_after_copyfiles: [] ## default: become: &quot;no&quot;
+* execute command after executing ilninfile module
+* e.g. - { command: &quot;echo Hello&quot;, become: &quot;no&quot; }  ## Note: the default value of become is &quot;no&quot;
+
+mfts_sysctl_rules: []
+* set up syctl rules
+* e.g. { name: net.ipv4.ip_forward, value: 1 }
+
+mfts_ufw_packages: [&quot;ufw&quot;]
+* install the ufw deb package
+
+mfts_ufw_enable: false
+* If True, UFW changes the default policy to deny.
+
+mfts_ufw_enable_logging: false
+* If True, UFW enables the logging mode.
+
+mfts_ufw_allow_rules: []
+* e.g. { type: &quot;allow&quot;, from_ip: &quot;10.0.0.0/8&quot; }
+
+mfts_ufw_service_rules: []
+* e.g. { type: &quot;allow&quot;, port: 22, from_ip: &quot;10.0.0.0/8&quot;, to_ip: &quot;192.168.1.1/32&quot; }
+
+mfts_ufw_incoming_forward_rules: []
+* e.g. { type: &quot;allow&quot;, route: &quot;yes(default)&quot;, to_ip: &quot;192.168.1.22&quot;, to_port: &quot;22&quot;, proto: &quot;tcp(default)&quot; }
+
+mfts_ufw_outgoing_forward_rules: []
+* e.g. { type: &quot;allow&quot;, route: &quot;yes(default)&quot;, from_ip: &quot;192.168.1.22&quot;, from_port: &quot;22&quot;, proto: &quot;tcp(default)&quot; }
+
+mfts_iptables_masquerade_rules: []
+* If set, the iptables enables ip masquerade for the specified interface.
+* e.g. { interface: &quot;enp1s0&quot; }
+
+mfts_iptables_dnat_portforwarding_rules: []
+* e.g. { in_interface: &quot;enp1s0&quot;, incoming_port: &quot;20022&quot;, dest_port: &quot;22&quot;, dest: &quot;192.168.1.22&quot; }
+
+mfts_iptables_snat_portforwarding_rules: []
+* { protocol: &quot;tcp(default)&quot;, dst: &quot;192.168.1.22&quot;, dst_port: &quot;22&quot;, src: &quot;192.168.1.1&quot;, src_port: &quot;20022&quot; }
+
+mfts_systemd_rules: [] ## default: enabled: &quot;no&quot;, daemon_reload: &quot;no&quot;
+# e.g. { name: &quot;nginx.service&quot;, state: &quot;started&quot;, enabled: &quot;yes&quot;, daemon_reload: &quot;no&quot; }
+
+mfts_cronjob_rules: []
+# e.g. { name: &quot;echo hello&quot;, minute: &quot;2&quot;, job: &quot;echo Hello world!&quot; }  ## Each time related default value is &quot;*&quot;
+</code></pre>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>N/A</p>
+
+<h2 id="example-playbook">Example Playbook</h2>
+
+<h3 id="an-example-of-a-playbookyaml-file">An example of a playbook.yaml file</h3>
+
+<pre><code>- hosts: all
+  vars:
+    mfts_sshd_listen_ipaddr: 192.168.0.1
+  roles:
+    - YasuhiroABE.myfavorite-setting
+</code></pre>
+
+<h3 id="an-example-playbook-of-ufw-firewall-rules-for-nginx">An example playbook of ufw firewall rules for nginx</h3>
+
+<pre><code>- hosts: all
+  vars:
+    mfts_ufw_enable: True
+    mfts_ufw_enable_logging: True
+    mfts_ufw_service_rules:
+      - { type: &quot;allow&quot;, port: &quot;80&quot;, from_ip: &quot;0.0.0.0/0&quot;, to_ip: &quot;192.168.1.1/32&quot; }
+      - { type: &quot;allow&quot;, port: &quot;443&quot;, from_ip: &quot;0.0.0.0/0&quot;, to_ip: &quot;192.168.1.1/32&quot; }
+</code></pre>
+
+<h3 id="an-example-playbook-of-copying-tsl-certificate-and-key-files">An example playbook of copying TSL certificate and key files</h3>
+
+<pre><code>- hosts: all
+  vars:
+    mfts_additional_packages:
+      - ca-certificates
+      - nginx
+    mfts_setup_directory:
+      - { path: &quot;/usr/share/ca-certificates/local&quot;, state: &quot;directory&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0755&quot; }
+    mfts_copy_files:
+      - { src: &quot;{{ inventory_dir }}/files/nginx/server.conf&quot;, dest: &quot;/etc/nginx/conf.d/server.conf&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0644&quot; }
+      - { src: &quot;{{ inventory_dir }}/files/nginx/www.example.com.crt&quot;, dest: &quot;/usr/share/ca-certificates/local/www.example.com.crt&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0644&quot; }
+      - { src: &quot;{{ inventory_dir }}/files/nginx/www.example.com.nopass.key&quot;, dest: &quot;/etc/ssl/private/www.example.com.nopass.key&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0640&quot; }
+    mfts_lineinfile_after_copyfiles:
+      - { path: &quot;/etc/ca-certificates.conf&quot;, regexp: &quot;^local/www.example.com.crt$&quot;, line: &quot;local/www.example.com.crt&quot; }
+    mfts_command_after_copyfiles:
+      - { command: &quot;/usr/sbin/update-ca-certificates&quot;, become: &quot;yes&quot; }
+    mfts_systemd_rules:
+      - { name: &quot;nginx.service&quot;, state: &quot;started&quot;, enabled: &quot;yes&quot;, daemon_reload: &quot;no&quot; }
+  roles:
+    - YasuhiroABE.myfavorite-setting
+</code></pre>
+
+<h3 id="an-example-playbook-of-ssh-gateway">An example playbook of ssh gateway</h3>
+
+<ul>
+<li>Gateway
+
+<ul>
+<li>NIC</li>
+</ul></li>
+</ul>
+
+<p>test</p>
+
+<pre><code>- hosts: all
+  vars:
+    mfts_additional_packages:
+      - iptables-persistent
+    mfts_ufw_enable: True
+    mfts_ufw_enable_logging: True
+    mfts_ufs_allow_rules:
+      - { type: &quot;allow&quot;, from_ip: &quot;192.168.100.0/24&quot; }
+    mfts_ufw_service_rules:
+      - { type: &quot;allow&quot;, port: &quot;22&quot;, from_ip: &quot;163.143.139.0/24&quot;, to_ip: &quot;163.143.109.110/32&quot; }
+      - { type: &quot;allow&quot;, port: &quot;22&quot;, from_ip: &quot;163.143.109.0/24&quot;, to_ip: &quot;163.143.109.110/32&quot; }
+      - { type: &quot;deny&quot;, port: &quot;10022&quot;, from_ip: &quot;163.143.0.0/16&quot;, to_ip: &quot;163.143.109.110/32&quot; }
+    mfts_ufw_incoming_forward_rules:
+      - { type: &quot;deny&quot;, to_ip: &quot;192.168.100.186&quot;, to_port: &quot;10022&quot; }
+    mfts_ufw_outgoing_forward_rules:
+      - { type: &quot;deny&quot;, from_ip: &quot;192.168.100.186&quot;, from_port: &quot;10022&quot; }
+    mfts_iptables_dnat_portforwarding_rules:
+      - { in_interface: &quot;enp1s0&quot;, incoming_port: &quot;10022&quot;, dest_port: &quot;10022&quot;, dest: &quot;192.168.100.186&quot; }
+    mfts_iptables_snat_portforwarding_rules:
+      - { dest_port: &quot;10022&quot;, dest: &quot;192.168.100.186&quot;, src_port: &quot;10022&quot;, src: &quot;192.168.100.10&quot; }
+    mfts_iptables_masquerade_rules:
+      - { interface: &quot;enp1s0&quot;, source: &quot;192.168.100.0/24&quot; }
+    mfts_command_after_copyfiles:
+      - { command: &quot;/usr/sbin/iptables-save | tee /etc/iptables/rules.v4&quot;, become: &quot;yes&quot; }
+  roles:
+    - YasuhiroABE.myfavorite-setting
+</code></pre>
+
+<h2 id="license">License</h2>
+
+<p>Apache License 2.0</p>
+
+<h2 id="author-information">Author Information</h2>
+
+<p><a href="http://www.yasundial.org/foaf.xml">Yasuhiro ABE</a></p>

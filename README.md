@@ -99,6 +99,9 @@ Role Variables
     mfts_ufw_service_rules: []
     * e.g. { type: "allow", port: 22, from_ip: "10.0.0.0/8", to_ip: "192.168.1.1/32" }
     
+    mfts_ufw_broadcast_rules: []
+    * e.g. { type: "allow", port: "67", interface: "enp2s0", direction: "in", proto: "tcp(default)" }
+
     mfts_ufw_incoming_forward_rules: []
     * e.g. { type: "allow", route: "yes(default)", to_ip: "192.168.1.22", to_port: "22", proto: "tcp(default)" }
 
@@ -167,6 +170,55 @@ Example Playbook
           - { command: "/usr/sbin/update-ca-certificates", become: "yes" }
         mfts_systemd_rules:
           - { name: "nginx.service", state: "started", enabled: "yes", daemon_reload: "no" }
+      roles:
+        - YasuhiroABE.myfavorite-setting
+
+### An example playbook of ssh gateway
+
+We assume the following network structure.
+
+* Clients
+  * IP Range (10.1.0.0/16)
+* Ansible targe server (gateway server)
+  * IP1 (10.1.0.22/24, enp1s0)
+  * IP2 (10.2.0.22/24, enp2s0)
+* Internal SSH Server
+  * IP (10.2.0.122/24)
+  * Default Gateway (10.2.0.1)
+
+A client can execute the following command to connect to the internal ssh server throught the gateway.
+
+    $ ssh -p 10022 user@10.1.0.22
+
+The following YAML file can be apply to the gateway server.
+
+    - hosts: all
+      vars:
+        mfts_hostname: "gateway"
+        mfts_sshd_listen_ipaddr: 10.1.0.22
+        mfts_sysctl_rules:
+        - { name: net.ipv4.ip_forward, value: 1 }
+        mfts_additional_packages:
+          - iptables-persistent
+        mfts_ufw_enable: True
+        mfts_ufw_enable_logging: True
+        mfts_ufs_allow_rules:
+          - { type: "allow", from_ip: "10.2.0.0/16" }
+        mfts_ufw_service_rules:
+          - { type: "allow", port: "22", from_ip: "10.1.0.0/16", to_ip: "10.1.0.22/32" }
+          - { type: "allow", port: "10022", from_ip: "10.1.0.0/16", to_ip: "10.2.0.122/32" }
+        mfts_ufw_incoming_forward_rules:
+          - { type: "allow", to_ip: "10.2.0.122", to_port: "22" }
+        mfts_ufw_outgoing_forward_rules:
+          - { type: "allow", from_ip: "10.2.0.122", from_port: "22" }
+        mfts_iptables_dnat_portforwarding_rules:
+          - { in_interface: "enp1s0", incoming_port: "10022", dest_port: "22", dest: "10.2.0.122" }
+        mfts_iptables_snat_portforwarding_rules:
+          - { dest_port: "22", dest: "10.2.0.122", src_port: "10022", src: "10.2.0.22" }
+        mfts_iptables_masquerade_rules:
+          - { interface: "enp1s0", source: "10.2.0.0/24" }
+        mfts_command_after_copyfiles:
+          - { command: "/usr/sbin/iptables-save | tee /etc/iptables/rules.v4", become: "yes" }
       roles:
         - YasuhiroABE.myfavorite-setting
 

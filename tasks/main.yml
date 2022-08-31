@@ -195,7 +195,7 @@
     - "{{ mfts_ufw_allow_rules }}"
   register: result
 
-- name: allow/deny connection to service from specific network
+- name: allow/deny connection to service from the specific network
   become: true
   ufw:
     rule: "{{ item.type }}"
@@ -205,6 +205,18 @@
     proto: "{{ item.proto | default('tcp') }}"
   with_items:
     - "{{ mfts_ufw_service_rules }}"
+  register: result
+
+- name: allow/deny incomming connection to the specific device
+  become: true
+  ufw:
+    rule: "{{ item.type }}"
+    port: "{{ item.port }}"
+    interface: "{{ item.interface }}"
+    direction: "{{ item.direction }}"
+    proto: "{{ item.proto | default('tcp') }}"
+  with_items:
+    - "{{ mfts_ufw_broadcast_rules }}"
   register: result
 
 - name: allow/deny forwarding incoming packet
