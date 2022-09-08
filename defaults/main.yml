@@ -54,6 +54,9 @@ mfts_copy_files: []
 # e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
 mfts_lineinfile_after_copyfiles: []
 
+## e.g. - { src: "/bin/bash", dest: "/usr/local/gnu/bin" }
+mfts_setup_symlinks_after_copyfiles: []
+
 # e.g. - { command: "echo Hello", become: "no" }
 mfts_command_after_copyfiles: []
 

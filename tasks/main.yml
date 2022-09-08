@@ -125,7 +125,7 @@
   become: true
   file:
     path:  "{{ item.path }}"
-    state: "{{ item.state }}"
+    state: "{{ item.state | default('file') }}"
     owner: "{{ item.owner | default('') }}"
     group: "{{ item.group | default('') }}"
     mode:  "{{ item.mode | default('') }}"
@@ -154,6 +154,17 @@
     line: "{{ item.line }}"
   with_items:
     - "{{ mfts_lineinfile_after_copyfiles }}"
+  register: result
+
+- name: manage symbolic link after copying files
+  become: true
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: "{{ item.state | default('link') }}"
+    force: "{{ item.force | default('yes') }}"
+  with_items:
+    - "{{ mfts_setup_symlinks_after_copyfiles }}"
   register: result
 
 - name: after copying files, execute maintenance command using the shell module
