@@ -74,7 +74,7 @@ Role Variables
 
     mfts_lineinfile_after_copyfiles: []  ## default: state: "present"
     * execute lineinfile module after copying files
-    * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
+    * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 
     mfts_command_after_copyfiles: [] ## default: become: "no"
     * execute command after executing ilninfile module

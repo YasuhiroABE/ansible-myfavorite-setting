@@ -51,7 +51,7 @@ mfts_setup_directory: []
 # e.g. - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 mfts_copy_files: []
 
-# e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present" }
+# e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 mfts_lineinfile_after_copyfiles: []
 
 ## e.g. - { src: "/bin/bash", dest: "/usr/local/gnu/bin" }
