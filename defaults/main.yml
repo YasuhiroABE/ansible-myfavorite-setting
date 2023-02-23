@@ -54,6 +54,9 @@ mfts_copy_files: []
 # e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 mfts_lineinfile_after_copyfiles: []
 
+# e.g. - { path: "/sbin/dhclient-script", regexp: "^.*make_resolv_conf$", replace: "echo make_resolv_conf", before: "", after: "" }
+mfts_replace_after_copyfiles: []
+
 ## e.g. - { src: "/bin/bash", dest: "/usr/local/gnu/bin" }
 mfts_setup_symlinks_after_copyfiles: []
 

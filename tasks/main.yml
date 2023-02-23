@@ -157,6 +157,18 @@
     - "{{ mfts_lineinfile_after_copyfiles }}"
   register: result
 
+- name: after copying files, replace multiple lines using replace module
+  become: true
+  replace:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+    after: ""
+    before: ""
+  with_items:
+    - "{{ mfts_replace_after_copyfiles }}"
+  register: result
+
 - name: manage symbolic link after copying files
   become: true
   file:

@@ -76,6 +76,9 @@ Role Variables
     * execute lineinfile module after copying files
     * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 
+    mfts_replace_after_copyfiles: []
+	# e.g. - { path: "/sbin/dhclient-script", regexp: "^.*make_resolv_conf$", replace: "echo make_resolv_conf", before: "", after: "" }
+
     mfts_command_after_copyfiles: [] ## default: become: "no"
     * execute command after executing ilninfile module
     * e.g. - { command: "echo Hello", become: "no" }  ## Note: the default value of become is "no"
