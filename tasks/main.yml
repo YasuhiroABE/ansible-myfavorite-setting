@@ -152,7 +152,7 @@
     state: "{{ item.state | default('present') }}"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-    insertbefore: "{{ item.insertbefore }}"
+    insertbefore: "{{ item.insertbefore | default('') }}"
   with_items:
     - "{{ mfts_lineinfile_after_copyfiles }}"
   register: result
