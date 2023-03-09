@@ -72,7 +72,7 @@ Role Variables
     * set up file information which you want to copy
     * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 
-    mfts_lineinfile_after_copyfiles: []  ## default: state: "present"
+    mfts_lineinfile_after_copyfiles: []  ## default: state: "present", insertbefore: ""
     * execute lineinfile module after copying files
     * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 
