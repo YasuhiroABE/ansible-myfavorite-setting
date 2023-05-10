@@ -2,9 +2,9 @@
 galaxy_info:
   role_name: myfavorite-setting
   author: Yasuhiro ABE
-  description: Setup fprobe-ng package on Ubuntu.
+  description: Personal automation tool with my favorite default settings
   license: Apache License 2.0
-  min_ansible_version: 2.9
+  min_ansible_version: 2.10
   platforms:
   - name: Ubuntu
     versions:
