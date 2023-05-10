@@ -1,126 +1,18 @@
 ---
-# tasks file for mfts
+## Basic configuration steps
+## 1. Copy files
+## 2. Install packages
+## 3. Copy files, again
+## 4. Setup something (setup files, manage user and group, etc.)
+## 5. Setup network configurations
+## 6. Execute commands
 
 - name: setup hostname
   become: true
   hostname: name="{{ mfts_hostname }}"
 
-- name: setup apt repository info
-  become: true
-  apt_repository:
-    repo: "{{ item }}"
-    state: present
-  with_items:
-    - "{{ mfts_add_apt_repositories }}"
-
-- name: remove apt repository info
-  become: true
-  apt_repository:
-    repo: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ mfts_remove_apt_repositories }}"
-
-- name: install packages
-  become: true
-  apt: pkg="{{ mfts_packages }}" update_cache=yes cache_valid_time=1200
-
-- name: install additional packages
-  become: true
-  apt: pkg="{{ mfts_additional_packages }}" update_cache=yes cache_valid_time=1200
-
-- name: remove packages
-  become: true
-  apt: pkg="{{ mfts_removal_packages }}" state=absent purge=yes
-
-- name: change locales
-  become: true
-  locale_gen:
-    name: "{{ item }}"
-  with_items:
-    - "{{ mfts_locales }}"
-
-- name: exec update-locale
-  become: true
-  command: update-locale LANG="{{ mfts_locales[0] }}"
-
-- name: modify escape for screen
-  become: true
-  lineinfile:
-    dest: /etc/screenrc
-    regexp: "^escape"
-    line: 'escape "^t^t"'
-
-- name: modify hardstatus for screen
-  become: true
-  lineinfile:
-    dest: /etc/screenrc
-    regexp: "^hardstatus"
-    line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
-- name: modify shelltitle for screen
-  become: true
-  lineinfile:
-    dest: /etc/screenrc
-    regexp: "^shelltitle"
-    line: 'shelltitle  "{{ mfts_hostname }}"'
-
-- name: setting timezone
-  become: true
-  timezone:
-    name: "{{ mfts_timezone }}"
-
-- name: modify dist-upgrade setting in cron-apt config file
-  become: true
-  lineinfile:
-    dest: /etc/cron-apt/action.d/3-download
-    regexp: "^dist-upgrade"
-    line: "dist-upgrade -y -o APT::Get::Show-Upgraded=true"
-  register: result
-
-- name: modify autoremove setting in cron-apt config file
-  become: true
-  lineinfile:
-    dest: /etc/cron-apt/action.d/3-download
-    insertafter: "^autoclean"
-    regexp: "^autoremove"
-    line: "autoremove -y"
-  register: result
-
-- name: modify the sshd listen address
-  become: true
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^ListenAddress"
-    line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
-  when: mfts_sshd_listen_ipaddr | length > 0
-  register: result
-
-- name: ssh modify the config file to disable password authentication
-  become: true
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
-  register: result
-
-- name: enable ssh.service on systemd
-  become: true
-  systemd:
-    name: ssh
-    state: started
-    enabled: true
-  register: result
-
-- name: additional user groups
-  become: true
-  user:
-    name: "{{ item.user }}"
-    groups: "{{ item.groups }}"
-    append: yes
-  with_items:
-    - "{{ mfts_additional_groups }}"
-  register: result
-
+## copying files
+  
 - name: manage file and directory before copying files.
   become: true
   file:
@@ -132,8 +24,8 @@
   with_items:
     - "{{ mfts_setup_directory }}"
   register: result
-
-- name: copy files using template
+  
+- name: copy files
   become: true
   copy:
     src: "{{ item.src }}"
@@ -187,6 +79,194 @@
     - "{{ mfts_command_after_copyfiles }}"
   register: result
 
+## installing packages
+  
+- name: setup apt repository info
+  become: true
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mfts_add_apt_repositories }}"
+
+- name: remove apt repository info
+  become: true
+  apt_repository:
+    repo: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ mfts_remove_apt_repositories }}"
+
+- name: install packages
+  become: true
+  apt: pkg="{{ mfts_packages }}" update_cache=yes cache_valid_time=1200
+
+- name: install additional packages
+  become: true
+  apt: pkg="{{ mfts_additional_packages }}" update_cache=yes cache_valid_time=1200
+
+- name: remove packages
+  become: true
+  apt: pkg="{{ mfts_removal_packages }}" state=absent purge=yes
+
+## setup files after installing packages
+
+- name: copy files
+  become: true
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode:  "{{ item.mode }}"
+  with_items:
+    - "{{ mfts_copy_files_after_packages }}"
+  register: result
+
+- name: after installing packages, modify these or other files using lineinfile
+  become: true
+  lineinfile:
+    path: "{{ item.path }}"
+    state: "{{ item.state | default('present') }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: "{{ item.insertbefore | default('') }}"
+  with_items:
+    - "{{ mfts_lineinfile_after_packages }}"
+  register: result
+
+- name: after installing packages, replace multiple lines using replace module
+  become: true
+  replace:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+    after: ""
+    before: ""
+  with_items:
+    - "{{ mfts_replace_after_packages }}"
+  register: result
+
+- name: manage symbolic link after installing packages
+  become: true
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: "{{ item.state | default('link') }}"
+    force: "{{ item.force | default('yes') }}"
+  with_items:
+    - "{{ mfts_setup_symlinks_after_packages }}"
+  register: result
+
+- name: after installing packages, execute maintenance command using the shell module
+  become: "{{ item.become | default('no') }}"
+  shell: "{{ item.command }}"
+  with_items:
+    - "{{ mfts_command_after_packages }}"
+  register: result
+
+## setup locale
+  
+- name: change locales
+  become: true
+  locale_gen:
+    name: "{{ item }}"
+  with_items:
+    - "{{ mfts_locales }}"
+
+- name: exec update-locale
+  become: true
+  command: update-locale LANG="{{ mfts_locales[0] }}"
+
+## setup /etc/screenrc file
+  
+- name: modify escape for screen
+  become: true
+  lineinfile:
+    dest: /etc/screenrc
+    regexp: "^escape"
+    line: 'escape "^t^t"'
+
+- name: modify hardstatus for screen
+  become: true
+  lineinfile:
+    dest: /etc/screenrc
+    regexp: "^hardstatus"
+    line: 'hardstatus alwayslastline "%-w [screen %n%?: %t%?] %+w (%Y/%m/%d %c)"'
+- name: modify shelltitle for screen
+  become: true
+  lineinfile:
+    dest: /etc/screenrc
+    regexp: "^shelltitle"
+    line: 'shelltitle  "{{ mfts_hostname }}"'
+
+## setup timezone
+    
+- name: setting timezone
+  become: true
+  timezone:
+    name: "{{ mfts_timezone }}"
+
+## setup cron-apt
+
+- name: modify dist-upgrade setting in cron-apt config file
+  become: true
+  lineinfile:
+    dest: /etc/cron-apt/action.d/3-download
+    regexp: "^dist-upgrade"
+    line: "dist-upgrade -y -o APT::Get::Show-Upgraded=true"
+  register: result
+
+- name: modify autoremove setting in cron-apt config file
+  become: true
+  lineinfile:
+    dest: /etc/cron-apt/action.d/3-download
+    insertafter: "^autoclean"
+    regexp: "^autoremove"
+    line: "autoremove -y"
+  register: result
+
+## setup sshd
+  
+- name: modify the sshd listen address
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^ListenAddress"
+    line: "ListenAddress {{ mfts_sshd_listen_ipaddr }}"
+  when: mfts_sshd_listen_ipaddr | length > 0
+  register: result
+
+- name: ssh modify the config file to disable password authentication
+  become: true
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  register: result
+
+- name: enable ssh.service on systemd
+  become: true
+  systemd:
+    name: ssh
+    state: started
+    enabled: true
+  register: result
+
+## setup user/group
+  
+- name: additional user groups
+  become: true
+  user:
+    name: "{{ item.user }}"
+    groups: "{{ item.groups }}"
+    append: yes
+  with_items:
+    - "{{ mfts_additional_groups }}"
+  register: result
+
+## setup sysctl
+  
 - name: modify /etc/sysctl.conf
   become: true
   sysctl:
@@ -196,7 +276,8 @@
     - "{{ mfts_sysctl_rules }}"
   register: result
 
-## install ufw module if enabled
+## setup ufw
+
 - name: install ufw related packages
   become: true
   apt:
@@ -209,7 +290,6 @@
     or mfts_ufw_enable
   register: result
 
-##  setup ufw module
 - name: allow/deny from specific network
   become: true
   ufw:
@@ -244,6 +324,7 @@
   register: result
 
 - name: allow/deny forwarding incoming packet
+  become: true
   ufw:
     rule: "{{ item.type }}"
     route: "{{ item.route | default('yes') }}"
@@ -257,6 +338,7 @@
 
 ## setup ufw outgoing forward rules
 - name: allow/deny forwarding outgoing packet
+  become: true
   ufw:
     rule: "{{ item.type }}"
     route: "{{ item.route | default('yes') }}"
@@ -267,8 +349,9 @@
   with_items:
     - "{{ mfts_ufw_outgoing_forward_rules }}"
   register: result
-  
-## setup iptables module for ip masquerade
+
+## setup iptables for masquerade
+
 - name: Enable IP Masquerade
   become: true
   iptables:
@@ -324,7 +407,8 @@
   when: mfts_ufw_enable_logging
   register: result
 
-## setup systemd module for daemon services
+## setup systemd
+
 - name: Manage systemd services
   become: true
   systemd:
