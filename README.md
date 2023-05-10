@@ -3,13 +3,20 @@ YasuhiroABE.myfavorite-setting
 
 This role sets up my favorite settings for ubuntu.
 
+1. Copy files
+2. Install packages
+3. Copy files, again
+4. Setup something (setup files, manage user and group, etc.)
+5. Setup network configurations
+6. Execute commands
+
 Requirements
 ------------
 
 This role is tested on the following platforms.
 
 ### Ansible
-- Version 2.9
+- Version 2.10
 
 ### Distributions
 - Ubuntu 20.04
@@ -69,17 +76,25 @@ Role Variables
     * e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" }
 
     mfts_copy_files: []
+    mfts_copy_files_after_packages: []
     * set up file information which you want to copy
     * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
 
     mfts_lineinfile_after_copyfiles: []  ## default: state: "present", insertbefore: ""
+    mfts_lineinfile_after_packages: []
     * execute lineinfile module after copying files
     * e.g. - { path: "/etc/ca-certificates.conf", regexp: "^local/www.example.com.crt$", line: "local/www.example.com.crt", state: "present", insertbefore: "" }
 
     mfts_replace_after_copyfiles: []
-	# e.g. - { path: "/sbin/dhclient-script", regexp: "^.*make_resolv_conf$", replace: "echo make_resolv_conf", before: "", after: "" }
+    mfts_replace_after_packages: []
+    # e.g. - { path: "/sbin/dhclient-script", regexp: "^.*make_resolv_conf$", replace: "echo make_resolv_conf", before: "", after: "" }
+
+    mfts_setup_symlinks_after_copyfiles: []
+    mfts_setup_symlinks_after_packages: []
+    # e.g. - { src: "/bin/bash", dest: "/usr/local/gnu/bin" }
 
     mfts_command_after_copyfiles: [] ## default: become: "no"
+    mfts_command_after_packages: []
     * execute command after executing ilninfile module
     * e.g. - { command: "echo Hello", become: "no" }  ## Note: the default value of become is "no"
 

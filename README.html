@@ -2,6 +2,15 @@
 
 <p>This role sets up my favorite settings for ubuntu.</p>
 
+<ol>
+<li>Copy files</li>
+<li>Install packages</li>
+<li>Copy files, again</li>
+<li>Setup something (setup files, manage user and group, etc.)</li>
+<li>Setup network configurations</li>
+<li>Execute commands</li>
+</ol>
+
 <h2 id="requirements">Requirements</h2>
 
 <p>This role is tested on the following platforms.</p>
@@ -9,7 +18,7 @@
 <h3 id="ansible">Ansible</h3>
 
 <ul>
-<li>Version 2.9</li>
+<li>Version 2.10</li>
 </ul>
 
 <h3 id="distributions">Distributions</h3>
@@ -72,14 +81,25 @@ mfts_setup_directory: []
 * e.g. { path: &quot;/etc/..&quot;, state: &quot;directory&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0755&quot; }
 
 mfts_copy_files: []
+mfts_copy_files_after_packages: []
 * set up file information which you want to copy
 * { src:&quot;foo.txt&quot;, dest:&quot;/tmp/foo.txt&quot;, owner:&quot;root&quot;, group:&quot;root&quot;, mode:&quot;0644&quot; }
 
-mfts_lineinfile_after_copyfiles: []  ## default: state: &quot;present&quot;
+mfts_lineinfile_after_copyfiles: []  ## default: state: &quot;present&quot;, insertbefore: &quot;&quot;
+mfts_lineinfile_after_packages: []
 * execute lineinfile module after copying files
-* e.g. - { path: &quot;/etc/ca-certificates.conf&quot;, regexp: &quot;^local/www.example.com.crt$&quot;, line: &quot;local/www.example.com.crt&quot;, state: &quot;present&quot; }
+* e.g. - { path: &quot;/etc/ca-certificates.conf&quot;, regexp: &quot;^local/www.example.com.crt$&quot;, line: &quot;local/www.example.com.crt&quot;, state: &quot;present&quot;, insertbefore: &quot;&quot; }
+
+mfts_replace_after_copyfiles: []
+mfts_replace_after_packages: []
+# e.g. - { path: &quot;/sbin/dhclient-script&quot;, regexp: &quot;^.*make_resolv_conf$&quot;, replace: &quot;echo make_resolv_conf&quot;, before: &quot;&quot;, after: &quot;&quot; }
+
+mfts_setup_symlinks_after_copyfiles: []
+mfts_setup_symlinks_after_packages: []
+# e.g. - { src: &quot;/bin/bash&quot;, dest: &quot;/usr/local/gnu/bin&quot; }
 
 mfts_command_after_copyfiles: [] ## default: become: &quot;no&quot;
+mfts_command_after_packages: []
 * execute command after executing ilninfile module
 * e.g. - { command: &quot;echo Hello&quot;, become: &quot;no&quot; }  ## Note: the default value of become is &quot;no&quot;
 
@@ -102,6 +122,9 @@ mfts_ufw_allow_rules: []
 mfts_ufw_service_rules: []
 * e.g. { type: &quot;allow&quot;, port: 22, from_ip: &quot;10.0.0.0/8&quot;, to_ip: &quot;192.168.1.1/32&quot; }
 
+mfts_ufw_broadcast_rules: []
+* e.g. { type: &quot;allow&quot;, port: &quot;67&quot;, interface: &quot;enp2s0&quot;, direction: &quot;in&quot;, proto: &quot;tcp(default)&quot; }
+
 mfts_ufw_incoming_forward_rules: []
 * e.g. { type: &quot;allow&quot;, route: &quot;yes(default)&quot;, to_ip: &quot;192.168.1.22&quot;, to_port: &quot;22&quot;, proto: &quot;tcp(default)&quot; }
 
@@ -123,6 +146,9 @@ mfts_systemd_rules: [] ## default: enabled: &quot;no&quot;, daemon_reload: &quot
 
 mfts_cronjob_rules: []
 # e.g. { name: &quot;echo hello&quot;, minute: &quot;2&quot;, job: &quot;echo Hello world!&quot; }  ## Each time related default value is &quot;*&quot;
+
+mfts_command_atlast: []
+# same as mfts_command_after_copyfiles
 </code></pre>
 
 <h2 id="dependencies">Dependencies</h2>
@@ -176,38 +202,60 @@ mfts_cronjob_rules: []
 
 <h3 id="an-example-playbook-of-ssh-gateway">An example playbook of ssh gateway</h3>
 
-<ul>
-<li>Gateway
+<p>We assume the following network structure.</p>
 
 <ul>
-<li>NIC</li>
+<li>Clients
+
+<ul>
+<li>IP Range (10.1.0.0/16)</li>
+</ul></li>
+<li>Ansible targe server (gateway server)
+
+<ul>
+<li>IP1 (10.1.0.22/24, enp1s0)</li>
+<li>IP2 (10.2.0.22/24, enp2s0)</li>
+</ul></li>
+<li>Internal SSH Server
+
+<ul>
+<li>IP (10.2.0.122/24)</li>
+<li>Default Gateway (10.2.0.1)</li>
 </ul></li>
 </ul>
 
-<p>test</p>
+<p>A client can execute the following command to connect to the internal ssh server throught the gateway.</p>
+
+<pre><code>$ ssh -p 10022 user@10.1.0.22
+</code></pre>
+
+<p>The following YAML file can be apply to the gateway server.</p>
 
 <pre><code>- hosts: all
   vars:
+    mfts_hostname: &quot;gateway&quot;
+    mfts_sshd_listen_ipaddr: 10.1.0.22
+    mfts_sysctl_rules:
+    - { name: net.ipv4.ip_forward, value: 1 }
     mfts_additional_packages:
       - iptables-persistent
     mfts_ufw_enable: True
     mfts_ufw_enable_logging: True
     mfts_ufs_allow_rules:
-      - { type: &quot;allow&quot;, from_ip: &quot;192.168.100.0/24&quot; }
+      - { type: &quot;allow&quot;, from_ip: &quot;10.2.0.0/16&quot; }
     mfts_ufw_service_rules:
-      - { type: &quot;allow&quot;, port: &quot;22&quot;, from_ip: &quot;163.143.139.0/24&quot;, to_ip: &quot;163.143.109.110/32&quot; }
-      - { type: &quot;allow&quot;, port: &quot;22&quot;, from_ip: &quot;163.143.109.0/24&quot;, to_ip: &quot;163.143.109.110/32&quot; }
-      - { type: &quot;deny&quot;, port: &quot;10022&quot;, from_ip: &quot;163.143.0.0/16&quot;, to_ip: &quot;163.143.109.110/32&quot; }
+      - { type: &quot;allow&quot;, port: &quot;22&quot;, from_ip: &quot;10.1.0.0/16&quot;, to_ip: &quot;10.1.0.22/32&quot; }
+      - { type: &quot;allow&quot;, port: &quot;10022&quot;, from_ip: &quot;10.1.0.0/16&quot;, to_ip: &quot;10.2.0.122/32&quot; }
     mfts_ufw_incoming_forward_rules:
-      - { type: &quot;deny&quot;, to_ip: &quot;192.168.100.186&quot;, to_port: &quot;10022&quot; }
+      - { type: &quot;allow&quot;, to_ip: &quot;10.2.0.122&quot;, to_port: &quot;22&quot; }
     mfts_ufw_outgoing_forward_rules:
-      - { type: &quot;deny&quot;, from_ip: &quot;192.168.100.186&quot;, from_port: &quot;10022&quot; }
+      - { type: &quot;allow&quot;, from_ip: &quot;10.2.0.122&quot;, from_port: &quot;22&quot; }
     mfts_iptables_dnat_portforwarding_rules:
-      - { in_interface: &quot;enp1s0&quot;, incoming_port: &quot;10022&quot;, dest_port: &quot;10022&quot;, dest: &quot;192.168.100.186&quot; }
+      - { in_interface: &quot;enp1s0&quot;, incoming_port: &quot;10022&quot;, dest_port: &quot;22&quot;, dest: &quot;10.2.0.122&quot; }
     mfts_iptables_snat_portforwarding_rules:
-      - { dest_port: &quot;10022&quot;, dest: &quot;192.168.100.186&quot;, src_port: &quot;10022&quot;, src: &quot;192.168.100.10&quot; }
+      - { dest_port: &quot;22&quot;, dest: &quot;10.2.0.122&quot;, src_port: &quot;10022&quot;, src: &quot;10.2.0.22&quot; }
     mfts_iptables_masquerade_rules:
-      - { interface: &quot;enp1s0&quot;, source: &quot;192.168.100.0/24&quot; }
+      - { interface: &quot;enp1s0&quot;, source: &quot;10.2.0.0/24&quot; }
     mfts_command_after_copyfiles:
       - { command: &quot;/usr/sbin/iptables-save | tee /etc/iptables/rules.v4&quot;, become: &quot;yes&quot; }
   roles:
