@@ -73,6 +73,7 @@ Role Variables
     * set up additional user's groups (e.g. { user: user01, groups: sudo })
 
     mfts_setup_directory: []
+    mfts_setup_directory_after_packages: []
     * e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" }
 
     mfts_copy_files: []

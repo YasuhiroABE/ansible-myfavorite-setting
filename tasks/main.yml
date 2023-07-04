@@ -111,7 +111,7 @@
 
 ## setup files after installing packages
 
-- name: copy files
+- name: after installing packages, copy files
   become: true
   copy:
     src: "{{ item.src }}"
@@ -145,6 +145,18 @@
     before: ""
   with_items:
     - "{{ mfts_replace_after_packages }}"
+  register: result
+
+- name: after installing packages, manage file and directory before copying files.
+  become: true
+  file:
+    path:  "{{ item.path }}"
+    state: "{{ item.state | default('file') }}"
+    owner: "{{ item.owner | default('') }}"
+    group: "{{ item.group | default('') }}"
+    mode:  "{{ item.mode | default('') }}"
+  with_items:
+    - "{{ mfts_setup_directory_after_packages }}"
   register: result
 
 - name: manage symbolic link after installing packages
