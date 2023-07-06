@@ -46,6 +46,7 @@ mfts_additional_groups: []
 
 # setup empty directory or files (e.g. { path: "/etc/..", state: "directory", owner: "root", group: "root", mode: "0755" })
 mfts_setup_directory: []
+mfts_setup_directory_after_packages: []
 
 # set up file information which you want to copy
 # e.g. - { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
