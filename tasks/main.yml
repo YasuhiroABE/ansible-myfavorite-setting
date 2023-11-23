@@ -266,7 +266,16 @@
   register: result
 
 ## setup user/group
-  
+
+- name: addtional group definition
+  become: true
+  group:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mfts_additional_group }}"
+  register: result
+
 - name: additional user groups
   become: true
   user:

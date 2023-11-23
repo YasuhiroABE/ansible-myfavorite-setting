@@ -74,10 +74,14 @@ mfts_sshd_listen_ipaddr: ''
 mfts_hostname: &quot;{{ inventory_hostname }}&quot;
 * set up hostname by the ansible hostname module.
 
+mfts_additional_group: []
+* set up additional system group (e.g. [ &quot;wireshark &quot;])
+
 mfts_additional_groups: []
 * set up additional user's groups (e.g. { user: user01, groups: sudo })
 
 mfts_setup_directory: []
+mfts_setup_directory_after_packages: []
 * e.g. { path: &quot;/etc/..&quot;, state: &quot;directory&quot;, owner: &quot;root&quot;, group: &quot;root&quot;, mode: &quot;0755&quot; }
 
 mfts_copy_files: []

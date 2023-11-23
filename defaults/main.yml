@@ -41,6 +41,9 @@ mfts_sshd_listen_ipaddr: ''
 # set up hostname by the ansible hostname module.
 mfts_hostname: "{{ inventory_hostname }}"
 
+# set up additional group (e.g. [ "wireshark" ])
+mfts_additional_group: []
+
 # set up additional user's groups (e.g. { user: "user01", groups: "sudo" })
 mfts_additional_groups: []
 

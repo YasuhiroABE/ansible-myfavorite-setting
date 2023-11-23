@@ -51,23 +51,26 @@ Role Variables
 
     mfts_additional_packages: []
     * Specified packages will be installed to the system.
-    
+
     mfts_removal_packages: []
     * Specified packages will be removed from the system.
-    
+ 
     mfts_locales:
       - en_US.UTF-8
       - ja_JP.UTF-8
     * The top item will also be passed to the update-locale command.
-      
+ 
     mfts_timezone: "Asia/Tokyo"
     * This value will be passed to the *timezone* module.
 
     mfts_sshd_listen_ipaddr: ''
     * The sshd only listens on the specified ip address.
-    
+
     mfts_hostname: "{{ inventory_hostname }}"
     * set up hostname by the ansible hostname module.
+
+    mfts_additional_group: []
+    * set up additional system group (e.g. [ "wireshark "])
 
     mfts_additional_groups: []
     * set up additional user's groups (e.g. { user: user01, groups: sudo })
@@ -117,7 +120,7 @@ Role Variables
 
     mfts_ufw_service_rules: []
     * e.g. { type: "allow", port: 22, from_ip: "10.0.0.0/8", to_ip: "192.168.1.1/32" }
-    
+
     mfts_ufw_broadcast_rules: []
     * e.g. { type: "allow", port: "67", interface: "enp2s0", direction: "in", proto: "tcp(default)" }
 
@@ -130,7 +133,7 @@ Role Variables
     mfts_iptables_masquerade_rules: []
     * If set, the iptables enables ip masquerade for the specified interface.
     * e.g. { interface: "enp1s0" }
-    
+
     mfts_iptables_dnat_portforwarding_rules: []
     * e.g. { in_interface: "enp1s0", incoming_port: "20022", dest_port: "22", dest: "192.168.1.22" }
 
