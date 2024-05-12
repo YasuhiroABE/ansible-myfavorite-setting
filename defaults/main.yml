@@ -3,7 +3,7 @@
 
 mfts_packages:
   - screen
-  - mlocate
+  - plocate
   - net-tools
   - dnsutils
   - iproute2
