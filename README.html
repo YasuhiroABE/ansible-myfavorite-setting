@@ -117,8 +117,9 @@ mfts_ufw_packages: [&quot;ufw&quot;]
 mfts_ufw_enable: false
 * If True, UFW changes the default policy to deny.
 
-mfts_ufw_enable_logging: false
-* If True, UFW enables the logging mode.
+mfts_ufw_enable_logging: &quot;low&quot;
+* If True, UFW enables the logging &quot;low&quot; mode.
+* The value must be one of [&quot;on&quot;,&quot;off&quot;,&quot;low&quot;,&quot;medium&quot;,&quot;high&quot;,&quot;full&quot;,True]
 
 mfts_ufw_allow_rules: []
 * e.g. { type: &quot;allow&quot;, from_ip: &quot;10.0.0.0/8&quot; }

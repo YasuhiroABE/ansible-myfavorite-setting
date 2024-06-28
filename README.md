@@ -112,8 +112,9 @@ Role Variables
     mfts_ufw_enable: false
     * If True, UFW changes the default policy to deny.
 
-    mfts_ufw_enable_logging: false
-    * If True, UFW enables the logging mode.
+    mfts_ufw_enable_logging: "low"
+    * If True, UFW enables the logging "low" mode.
+	* The value must be one of ["on","off","low","medium","high","full",True]
 
     mfts_ufw_allow_rules: []
     * e.g. { type: "allow", from_ip: "10.0.0.0/8" }

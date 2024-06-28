@@ -424,7 +424,7 @@
 - name: Enable logging
   become: true
   ufw:
-    logging: on
+    logging: '{{ [mfts_ufw_enable_logging] | select("in", ["on","off","low","medium","high","full"]) | first | default("low") }}'
   when: mfts_ufw_enable_logging
   register: result
 
