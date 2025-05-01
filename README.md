@@ -139,7 +139,7 @@ Role Variables
     * e.g. { in_interface: "enp1s0", incoming_port: "20022", dest_port: "22", dest: "192.168.1.22" }
 
     mfts_iptables_snat_portforwarding_rules: []
-    * { protocol: "tcp(default)", dst: "192.168.1.22", dst_port: "22", src: "192.168.1.1", src_port: "20022" }
+    * { protocol: "tcp(default)", dest: "192.168.1.22", dest_port: "22", src: "192.168.1.1", src_port: "20022" }
 
     mfts_systemd_rules: [] ## default: enabled: "no", daemon_reload: "no"
     # e.g. { name: "nginx.service", state: "started", enabled: "yes", daemon_reload: "no" }
