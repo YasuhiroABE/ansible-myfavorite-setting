@@ -16,11 +16,11 @@ Requirements
 This role is tested on the following platforms.
 
 ### Ansible
-- Version 2.10
+- Version 2.17
 
 ### Distributions
-- Ubuntu 20.04
 - Ubuntu 22.04
+- Ubuntu 24.04
 
 Role Variables
 --------------
@@ -132,14 +132,16 @@ Role Variables
     * e.g. { type: "allow", route: "yes(default)", from_ip: "192.168.1.22", from_port: "22", proto: "tcp(default)" }
 
     mfts_iptables_masquerade_rules: []
-    * If set, the iptables enables ip masquerade for the specified interface.
+    * If set, the iptables enables ip masquerade for the specified interface. (See Note)
     * e.g. { interface: "enp1s0" }
 
     mfts_iptables_dnat_portforwarding_rules: []
     * e.g. { in_interface: "enp1s0", incoming_port: "20022", dest_port: "22", dest: "192.168.1.22" }
+	* See Note
 
     mfts_iptables_snat_portforwarding_rules: []
     * { protocol: "tcp(default)", dest: "192.168.1.22", dest_port: "22", src: "192.168.1.1", src_port: "20022" }
+	* See Note
 
     mfts_systemd_rules: [] ## default: enabled: "no", daemon_reload: "no"
     # e.g. { name: "nginx.service", state: "started", enabled: "yes", daemon_reload: "no" }
@@ -149,6 +151,11 @@ Role Variables
 
     mfts_command_atlast: []
     # same as mfts_command_after_copyfiles
+
+
+Note
+====
+All of the NAT rules must also be stored in /etc/ufw/before.rules as for the "ufw reload" can be called.
 
 Dependencies
 ------------
