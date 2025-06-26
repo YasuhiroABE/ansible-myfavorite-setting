@@ -97,6 +97,10 @@
   with_items:
     - "{{ mfts_remove_apt_repositories }}"
 
+- name: install remaining packages
+  become: true
+  apt: upgrade=dist update_cache=yes
+
 - name: install packages
   become: true
   apt: pkg="{{ mfts_packages }}" update_cache=yes cache_valid_time=1200
