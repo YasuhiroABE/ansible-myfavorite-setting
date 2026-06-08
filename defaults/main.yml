@@ -79,7 +79,7 @@ mfts_sysctl_rules: []
 # setup ufw firewall for Ubuntu
 mfts_ufw_packages: ["ufw"]
 mfts_ufw_enable: false
-mfts_ufw_enable_logging: false
+mfts_ufw_enable_logging: ""
 # e.g. { type: "allow", from_ip: "10.0.0.0/8" }
 mfts_ufw_allow_rules: []
 # e.g. { type: "allow", port: "22", from_ip: "10.0.0.0/8" }

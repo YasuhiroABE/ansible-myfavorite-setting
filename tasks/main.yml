@@ -309,7 +309,7 @@
     pkg="{{ mfts_ufw_packages }}"
     update_cache=yes
     cache_valid_time=1200
-  when: mfts_ufw_allow_rules
+  when: mfts_ufw_allow_rules | length > 0
     or mfts_ufw_service_rules | length > 0
     or mfts_iptables_masquerade_rules | length > 0
     or mfts_ufw_enable
@@ -429,7 +429,7 @@
   become: true
   ufw:
     logging: '{{ [mfts_ufw_enable_logging] | select("in", ["on","off","low","medium","high","full"]) | first | default("low") }}'
-  when: mfts_ufw_enable_logging
+  when: mfts_ufw_enable_logging | length > 0
   register: result
 
 ## setup systemd
