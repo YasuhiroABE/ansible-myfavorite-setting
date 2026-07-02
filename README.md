@@ -82,7 +82,7 @@ Role Variables
     mfts_copy_files: []
     mfts_copy_files_after_packages: []
     * set up file information which you want to copy
-    * { src:"foo.txt", dest:"/tmp/foo.txt", owner:"root", group:"root", mode:"0644" }
+    * { src: "foo.txt", dest: "/tmp/foo.txt", owner: "root", group: "root", mode: "0644" }
 
     mfts_lineinfile_after_copyfiles: []  ## default: state: "present", insertbefore: ""
     mfts_lineinfile_after_packages: []
